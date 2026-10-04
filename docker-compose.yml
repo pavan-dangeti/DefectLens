@@ -1,0 +1,15 @@
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    env_file:
+      - path: .env
+        required: false
+    volumes:
+      - ./data:/app/data
+      - ./artifacts:/app/artifacts
+      - ./mlruns:/app/mlruns
+
+  # MLflow is file-backed: tracking runs from `defectlens train` and writes to ./mlruns.
+  # No separate container is required for the local registry used in v1.

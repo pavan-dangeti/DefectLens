@@ -38,6 +38,26 @@ flagged when its score exceeds a per-category threshold calibrated on held-out g
 Because no defective examples are needed, a new product line can be onboarded from a handful of
 good images — which is measured and reported, not assumed.
 
+## Run locally
+
+```bash
+uv sync
+uv run defectlens init          # workspace dirs + local MLflow tracking
+uv run defectlens versions
+uv run defectlens data download visa        # fetch + verify + manifest
+uv run defectlens data verify visa
+uv run ruff check . && uv run ruff format --check .
+uv run mypy src/defectlens
+uv run pytest --cov --cov-report=term-missing
+```
+
+Build and run the container:
+
+```bash
+docker build -t defectlens .
+docker compose up
+```
+
 ## Licences
 
 The benchmarks carry different licences, and this affects what ships:

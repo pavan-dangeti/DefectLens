@@ -1,4 +1,4 @@
-# Datasets — never committed. Fetched by scripts/download_dataset.py
+# Datasets — never committed. Fetched by `defectlens data download`.
 data/
 *.tar
 *.tar.gz
