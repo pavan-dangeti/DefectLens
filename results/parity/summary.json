@@ -1,0 +1,7 @@
+{
+  "anomalib_score_auroc": 0.875,
+  "mine_score_auroc": 0.875,
+  "mine_on_anomalib_bank_auroc": 0.875,
+  "max_abs_score_diff_vs_anomalib": 2.288818359375e-05,
+  "mean_abs_score_diff_vs_anomalib": 4.76837158203125e-06
+}

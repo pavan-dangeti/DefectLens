@@ -19,6 +19,10 @@ dependencies = [
   "numpy>=1.26",
   "pillow>=10.3",
   "mlflow>=2.12",
+  "torch>=2.14.1",
+  "torchvision>=0.29.1",
+  "faiss-cpu>=1.15.1",
+  "anomalib>=2.6.2",
 ]
 
 [dependency-groups]
@@ -63,7 +67,7 @@ show_error_codes = true
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["mlflow.*", "yaml.*"]
+module = ["mlflow.*", "yaml.*", "sklearn.*", "timm.*", "torchvision.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
@@ -76,6 +80,10 @@ markers = [
 [tool.coverage.run]
 source = ["src/defectlens"]
 branch = true
+omit = [
+  # heavyweight parity runner: executed by results/parity/run.py, not CI
+  "src/defectlens/eval/parity.py",
+]
 
 [tool.coverage.report]
 show_missing = true
