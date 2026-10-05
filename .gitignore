@@ -1,0 +1,52 @@
+# Datasets — never committed. Fetched by scripts/download_dataset.py
+data/
+*.tar
+*.tar.gz
+*.zip
+
+# Model artefacts — reproducible from configs + seeds, tracked in the registry
+artifacts/
+*.npy
+*.npz
+*.faiss
+*.index
+*.onnx
+*.ort
+*.mlflow
+
+# Secrets — keys live here only
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Experiment scratch
+outputs/
+logs/
+*.log
+.cache/
+mlruns/
+wandb/
+.notebook_checkpoints/
+scratch/
+
+# Tooling
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.hypothesis/
+
+# Agent / editor scratch
+.serena/
+.playwright-mcp/
+.DS_Store
+.idea/
+.vscode/
