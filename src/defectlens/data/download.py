@@ -44,11 +44,11 @@ def download(
                     real_size += len(chunk)
         if expected_size is not None and real_size != expected_size:
             tmp.unlink(missing_ok=True)
-            raise IOError(f"size mismatch: got {real_size}, expected {expected_size}")
+            raise OSError(f"size mismatch: got {real_size}, expected {expected_size}")
         digest = h.hexdigest()
         if expected_sha256 is not None and digest != expected_sha256:
             tmp.unlink(missing_ok=True)
-            raise IOError(f"sha256 mismatch: got {digest}, expected {expected_sha256}")
+            raise OSError(f"sha256 mismatch: got {digest}, expected {expected_sha256}")
         tmp.replace(dest)
         return dest
     finally:

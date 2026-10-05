@@ -22,9 +22,7 @@ class Splits:
             raise ValueError("splits must be disjoint")
 
 
-def make_splits(
-    n: int, seed: int, ratios: dict[str, float] | None = None
-) -> Splits:
+def make_splits(n: int, seed: int, ratios: dict[str, float] | None = None) -> Splits:
     """Deterministically partition ``n`` items into fit / calibration / holdout.
 
     The split is stable for a given ``(n, seed, ratios)``, disjoint, and total: every index in
