@@ -83,5 +83,8 @@ class PaDiM(nn.Module):
         with torch.no_grad():
             embedding = self._embedding(images)
             maps = torch.cat([self.score(embedding[i : i + 1]) for i in range(embedding.shape[0])])
+            maps = torch.nn.functional.interpolate(
+                maps, size=images.shape[-2:], mode="bilinear", align_corners=False
+            )
             scores = maps.amax(dim=(-2, -1)).squeeze(1)
             return scores, maps

@@ -67,7 +67,7 @@ show_error_codes = true
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["mlflow.*", "yaml.*", "sklearn.*", "timm.*", "torchvision.*"]
+module = ["mlflow.*", "yaml.*", "sklearn.*", "timm.*", "torchvision.*", "scipy.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
