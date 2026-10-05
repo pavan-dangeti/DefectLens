@@ -25,6 +25,7 @@ dependencies = [
   "anomalib>=2.6.2",
   "onnx>=1.23.1",
   "onnxruntime>=1.30.0",
+  "onnxscript>=0.7.2",
 ]
 
 [dependency-groups]
@@ -69,7 +70,7 @@ show_error_codes = true
 plugins = ["pydantic.mypy"]
 
 [[tool.mypy.overrides]]
-module = ["mlflow.*", "yaml.*", "sklearn.*", "timm.*", "torchvision.*", "scipy.*"]
+module = ["mlflow.*", "yaml.*", "sklearn.*", "timm.*", "torchvision.*", "scipy.*", "onnx.*", "onnxruntime.*", "pandas.*", "skimage.*"]
 ignore_missing_imports = true
 
 [tool.pytest.ini_options]
