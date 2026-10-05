@@ -1,11 +1,11 @@
-# Datasets — never committed. Fetched by scripts/download_dataset.py
-data/
+# Datasets — never committed. Fetched by `defectlens data download`.
+/data/
 *.tar
 *.tar.gz
 *.zip
 
 # Model artefacts — reproducible from configs + seeds, tracked in the registry
-artifacts/
+/artifacts/
 *.npy
 *.npz
 *.faiss
@@ -22,14 +22,14 @@ artifacts/
 *.key
 
 # Experiment scratch
-outputs/
-logs/
+/outputs/
+/logs/
 *.log
-.cache/
-mlruns/
+/.cache/
+/mlruns/
 wandb/
 .notebook_checkpoints/
-scratch/
+/scratch/
 
 # Tooling
 __pycache__/

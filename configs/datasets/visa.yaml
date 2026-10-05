@@ -1,0 +1,21 @@
+name: visa
+licence: CC BY 4.0
+non_commercial: false
+url: https://amazon-visual-anomaly.s3.us-west-2.amazonaws.com/VisA_20220922.tar
+expected_size_bytes: 1929840640
+categories:
+  - pcb1
+  - pcb2
+  - pcb3
+  - pcb4
+  - macaroni1
+  - macaroni2
+  - capsules
+  - candles
+  - cashew
+  - chewinggum
+  - fryum
+  - pipe_fryum
+notes: >
+  CC BY 4.0, commercial use permitted with attribution.
+  Default serving path for the public demo.

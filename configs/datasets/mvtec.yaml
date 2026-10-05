@@ -1,0 +1,24 @@
+name: mvtec
+licence: CC BY-NC-SA 4.0
+non_commercial: true
+url: null
+expected_size_bytes: null
+categories:
+  - bottle
+  - cable
+  - capsule
+  - carpet
+  - grid
+  - hazelnut
+  - leather
+  - metal_nut
+  - pill
+  - screw
+  - tile
+  - toothbrush
+  - transistor
+  - wood
+  - zipper
+notes: >
+  Registration required; commercial use prohibited (CC BY-NC-SA 4.0).
+  Used as a research benchmark only — no MVTec-derived artefact ships.
