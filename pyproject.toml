@@ -23,6 +23,8 @@ dependencies = [
   "torchvision>=0.29.1",
   "faiss-cpu>=1.15.1",
   "anomalib>=2.6.2",
+  "onnx>=1.23.1",
+  "onnxruntime>=1.30.0",
 ]
 
 [dependency-groups]
