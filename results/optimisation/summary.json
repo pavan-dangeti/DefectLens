@@ -1,0 +1,19 @@
+{
+  "backbone": "wide_resnet50_2",
+  "input": "1x3x224x224",
+  "fusion": "layer2+layer3",
+  "latency": {
+    "eager_ms": 135.3203750004468,
+    "onnx_fp32_ms": 59.33181300133583,
+    "onnx_int8_ms": 60.991499998635845
+  },
+  "cosine_similarity": {
+    "fp32": 0.9999999999804852,
+    "int8": 0.923581157624742
+  },
+  "file_sizes_bytes": {
+    "fp32": 38922,
+    "int8": 24973454
+  },
+  "int8_dynamic": true
+}
