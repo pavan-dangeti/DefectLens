@@ -109,4 +109,8 @@ class PatchCore(nn.Module):
                 )
                 scores.append(score)
                 maps.append(amap)
-            return torch.stack(scores), torch.cat(maps, dim=0)
+            maps_out = torch.cat(maps, dim=0)
+            maps_out = torch.nn.functional.interpolate(
+                maps_out, size=images.shape[-2:], mode="bilinear", align_corners=False
+            )
+            return torch.stack(scores), maps_out

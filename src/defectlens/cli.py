@@ -92,3 +92,33 @@ def init() -> None:
 @app.command()
 def versions() -> None:
     console.print(f"defectlens {__version__}")
+
+
+eval_app = typer.Typer(help="Evaluation runs.", no_args_is_help=True)
+app.add_typer(eval_app, name="eval")
+
+
+@eval_app.command("benchmark")
+def eval_benchmark(
+    dataset_root: Path = typer.Option(
+        ..., "--dataset-root", help="Root of an extracted category-layout dataset."
+    ),
+    category: str = typer.Option(..., "--category", help="Category name, e.g. bottle."),
+    method: str = typer.Option("patchcore", "--method", help="patchcore | padim."),
+    seed: int = typer.Option(0, "--seed"),
+    limit_few_shot: bool = typer.Option(
+        False, "--quick", help="Skip the few-shot curve for a quick smoke run."
+    ),
+) -> None:
+    from defectlens.eval.benchmark import evaluate_category
+
+    result, _samples = evaluate_category(
+        dataset_root,
+        category,
+        method=method,
+        few_shot_counts=() if limit_few_shot else (1, 5, 10, 50),
+        seed=seed,
+    )
+    import json
+
+    console.print_json(json.dumps(result, default=str))

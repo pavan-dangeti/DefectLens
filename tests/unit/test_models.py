@@ -73,7 +73,9 @@ def test_patchcore_fit_and_predict_shapes() -> None:
     scores2, maps2 = pc.score_with_bank(pc._coreset, images)
     scores3, maps3 = pc.predict(images)
     assert torch.allclose(scores2, scores3)
-    assert torch.allclose(maps2, maps3)
+    # score_with_bank returns raw 28x28 maps; predict upsamples to input resolution
+    assert maps2.shape[-2:] == (28, 28)
+    assert maps3.shape[-2:] == (224, 224)
 
 
 def test_padim_shapes() -> None:
