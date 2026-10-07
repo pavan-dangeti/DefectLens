@@ -90,6 +90,19 @@ def init() -> None:
 
 
 @app.command()
+def serve(
+    host: str = typer.Option("0.0.0.0", "--host"),
+    port: int = typer.Option(8000, "--port"),
+) -> None:
+    import uvicorn
+
+    from defectlens.serving.app import create_app
+
+    app = create_app(models=None)
+    uvicorn.run(app, host=host, port=port)
+
+
+@app.command()
 def versions() -> None:
     console.print(f"defectlens {__version__}")
 
