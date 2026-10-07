@@ -31,6 +31,7 @@ class FeatureExtractor(nn.Module):
 
         self.name = name
         self.layers = layers
+        self.pretrained = pretrained
         self.model = timm.create_model(name, pretrained=pretrained, features_only=True)
         self.model.eval()
         for param in self.model.parameters():

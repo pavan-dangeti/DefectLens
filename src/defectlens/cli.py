@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import json
 import shutil
 from pathlib import Path
 
@@ -90,16 +91,88 @@ def init() -> None:
 
 
 @app.command()
+def fit(
+    root: Path = typer.Option(..., "--root", help="Dataset root with <category>/train/good."),
+    category: str = typer.Option(..., "--category", help="Category to fit."),
+    out: Path = typer.Option(..., "--out", help="Registry directory to write <category>.pt into."),
+    coreset_ratio: float = typer.Option(0.01, "--coreset-ratio"),
+    target_frr: float = typer.Option(0.01, "--target-frr"),
+    seed: int = typer.Option(0, "--seed"),
+    backbone: str = typer.Option("wide_resnet50_2", "--backbone"),
+    pretrained: bool = typer.Option(
+        True, "--pretrained/--no-pretrained", help="--no-pretrained avoids the weights download."
+    ),
+    review_log: Path = typer.Option(
+        None, "--review-log", help="JSONL from the serving review loop; confirmed-good rows fit."
+    ),
+) -> None:
+    """Fit PatchCore, calibrate the threshold, and write a registry artefact.
+
+    This is the rebuild half of the review loop: run it after operators have labelled cases.
+    """
+    import numpy as np
+
+    from defectlens.eval.benchmark import VALID_EXT, _fit_calibration_splits, _to_tensors
+    from defectlens.models.patchcore import PatchCore
+
+    train_good = sorted(
+        p for p in (root / category / "train" / "good").iterdir() if p.suffix.lower() in VALID_EXT
+    )
+    if not train_good:
+        raise typer.BadParameter(f"no training images under {root / category / 'train' / 'good'}")
+    fit_paths, cal_paths, _ = _fit_calibration_splits(train_good, seed)
+    fit_paths = [*fit_paths, *_confirmed_good(review_log, category)]
+    model = PatchCore(
+        backbone=backbone, coreset_ratio=coreset_ratio, seed=seed, pretrained=pretrained
+    )
+    model.fit(_to_tensors(fit_paths))
+    cal_scores, _ = model.predict(_to_tensors(cal_paths))
+    threshold = float(np.quantile(cal_scores.detach().numpy(), 1.0 - target_frr))
+
+    out.mkdir(parents=True, exist_ok=True)
+    model.save(out / f"{category}.pt", category=category, threshold=threshold)
+    console.print(
+        f"  artefact:  {out / f'{category}.pt'}\n"
+        f"  fit on:    {len(fit_paths)} nominal images\n"
+        f"  threshold: {threshold:.6f} (target FRR {target_frr})"
+    )
+
+
+def _confirmed_good(review_log: Path | None, category: str) -> list[Path]:
+    """Spooled images an operator labelled confirmed-good for this category."""
+    if review_log is None or not review_log.is_file():
+        return []
+    rows = [json.loads(line) for line in review_log.read_text().splitlines() if line.strip()]
+    return [
+        Path(row["image_path"])
+        for row in rows
+        if row.get("label") == "confirmed-good"
+        and row.get("category") == category
+        and Path(row["image_path"]).is_file()
+    ]
+
+
+@app.command()
 def serve(
-    host: str = typer.Option("0.0.0.0", "--host"),
-    port: int = typer.Option(8000, "--port"),
+    registry: Path = typer.Option(
+        None, "--registry", help="Directory of <category>.pt artefacts; enables /ready."
+    ),
+    host: str = typer.Option(None, "--host"),
+    port: int = typer.Option(None, "--port"),
 ) -> None:
     import uvicorn
 
     from defectlens.serving.app import create_app
+    from defectlens.serving.registry import load_registry
 
-    app = create_app(models=None)
-    uvicorn.run(app, host=host, port=port)
+    settings = load_settings()
+    app = create_app(
+        models=load_registry(registry) if registry else {},
+        spool_dir=settings.artifacts_dir / "queue",
+        review_log=settings.artifacts_dir / "reviews.jsonl",
+    )
+    console.print(f"  registry:  {registry or '(none — /ready will report 503)'}")
+    uvicorn.run(app, host=host or settings.host, port=port or settings.port)
 
 
 @app.command()

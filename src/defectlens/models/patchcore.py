@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+from typing import Any
+
 import torch
 from torch import nn
 
@@ -9,6 +12,7 @@ from defectlens.models.coreset import greedy_coreset_indices
 from defectlens.models.features import FeatureExtractor
 
 _LAYERS = ("layer2", "layer3")  # paper default, both backbones
+_ARTIFACT_FORMAT = 1
 
 
 class PatchCore(nn.Module):
@@ -35,6 +39,54 @@ class PatchCore(nn.Module):
         self.num_neighbors = num_neighbors
         self.seed = seed
         self._coreset: torch.Tensor | None = None
+        self.category: str | None = None
+        self.threshold: float = 0.0
+
+    def save(self, path: Path, *, category: str, threshold: float) -> None:
+        """Persist the fitted coreset plus the config needed to rebuild it.
+
+        The backbone is frozen and never trained, so the coreset is only valid for the same
+        ``backbone`` weights it was fitted with; the name is stored to make that binding
+        explicit rather than implicit.
+        """
+        if self._coreset is None:
+            raise RuntimeError("call fit() before save()")
+        self.category, self.threshold = category, threshold
+        torch.save(
+            {
+                "format": _ARTIFACT_FORMAT,
+                "category": category,
+                "threshold": threshold,
+                "backbone": self.extractor.name,
+                "pretrained": self.extractor.pretrained,
+                "coreset_ratio": self.coreset_ratio,
+                "num_neighbors": self.num_neighbors,
+                "seed": self.seed,
+                "coreset": self._coreset,
+            },
+            path,
+        )
+
+    @classmethod
+    def load(cls, path: Path) -> PatchCore:
+        """Rebuild a fitted model. ``weights_only`` keeps loading restricted to plain data.
+
+        The bank is only meaningful against the backbone weights it was fitted with: in
+        production that is the deterministic ImageNet checkpoint, but with ``pretrained=False``
+        each construction gets fresh random weights, so callers must seed identically.
+        """
+        blob: dict[str, Any] = torch.load(path, map_location="cpu", weights_only=True)
+        model = cls(
+            backbone=blob["backbone"],
+            coreset_ratio=blob["coreset_ratio"],
+            num_neighbors=blob["num_neighbors"],
+            seed=blob["seed"],
+            pretrained=blob["pretrained"],
+        )
+        model._coreset = blob["coreset"]
+        model.category = blob["category"]
+        model.threshold = blob["threshold"]
+        return model
 
     def _bank_for(self, images: torch.Tensor) -> torch.Tensor:
         return self.extractor.flatten(self.extractor.embeddings(images))
