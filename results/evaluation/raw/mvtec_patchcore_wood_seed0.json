@@ -1,0 +1,39 @@
+{
+  "dataset": "mvtec",
+  "method": "patchcore",
+  "category": "wood",
+  "seed": 0,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T09:34:53.129024+00:00",
+  "wall_seconds": 284.4,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "233fb9c",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "wood",
+    "method": "patchcore",
+    "n_fit": 197,
+    "n_cal": 24,
+    "n_holdout": 26,
+    "n_test_good": 19,
+    "n_test_bad": 60,
+    "threshold": 48.91206954956054,
+    "image_auroc": 0.987719298245614,
+    "pixel_auroc": 0.9085156308055126,
+    "aupro": 0.8061678309780935,
+    "escape_rate_at_target_frr": 0.11666666666666667,
+    "frr_at_calibration_target": 0.038461538461538464,
+    "few_shot_image_auroc": {
+      "1": 0.9824561403508772,
+      "5": 0.9859649122807017,
+      "10": 0.9807017543859649,
+      "50": 0.9842105263157895
+    },
+    "seed": 0
+  }
+}

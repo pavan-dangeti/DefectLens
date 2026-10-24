@@ -83,8 +83,10 @@ def _write_atomic(path: Path, payload: dict[str, Any]) -> None:
     os.replace(tmp, path)
 
 
-def run_one(dataset: str, method: str, category: str, seed: int, coreset_ratio: float) -> Path:
-    path = OUT / f"{dataset}_{method}_{category}_seed{seed}.json"
+def run_one(
+    dataset: str, method: str, category: str, seed: int, coreset_ratio: float, out_dir: Path
+) -> Path:
+    path = out_dir / f"{dataset}_{method}_{category}_seed{seed}.json"
     if path.exists():
         print(f"skip {path.name} (exists)", flush=True)
         return path
@@ -127,13 +129,14 @@ def main() -> None:
     parser.add_argument("--categories", nargs="*", default=None)
     parser.add_argument("--seeds", nargs="*", type=int, default=[0, 1, 2])
     parser.add_argument("--coreset-ratio", type=float, default=0.01)
+    parser.add_argument("--out-dir", type=Path, default=OUT)
     args = parser.parse_args()
 
-    OUT.mkdir(parents=True, exist_ok=True)
+    args.out_dir.mkdir(parents=True, exist_ok=True)
     categories = args.categories or CATEGORIES[args.dataset]
     for seed in args.seeds:
         for category in categories:
-            run_one(args.dataset, args.method, category, seed, args.coreset_ratio)
+            run_one(args.dataset, args.method, category, seed, args.coreset_ratio, args.out_dir)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,39 @@
+{
+  "dataset": "mvtec",
+  "method": "patchcore",
+  "category": "screw",
+  "seed": 0,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T09:17:37.337877+00:00",
+  "wall_seconds": 398.7,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "233fb9c",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "screw",
+    "method": "patchcore",
+    "n_fit": 256,
+    "n_cal": 32,
+    "n_holdout": 32,
+    "n_test_good": 41,
+    "n_test_bad": 119,
+    "threshold": 44.35634876251221,
+    "image_auroc": 0.7868415658946505,
+    "pixel_auroc": 0.9688215737376618,
+    "aupro": 0.872560348197,
+    "escape_rate_at_target_frr": 0.7563025210084033,
+    "frr_at_calibration_target": 0.0625,
+    "few_shot_image_auroc": {
+      "1": 0.4373847099815536,
+      "5": 0.48309079729452764,
+      "10": 0.5460135273621644,
+      "50": 0.5025620004099202
+    },
+    "seed": 0
+  }
+}
