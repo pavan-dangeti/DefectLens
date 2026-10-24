@@ -1,0 +1,39 @@
+{
+  "dataset": "visa",
+  "method": "patchcore",
+  "category": "macaroni2",
+  "seed": 0,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T07:01:29.392240+00:00",
+  "wall_seconds": 832.0,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "937f549",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "macaroni2",
+    "method": "patchcore",
+    "n_fit": 720,
+    "n_cal": 90,
+    "n_holdout": 90,
+    "n_test_good": 100,
+    "n_test_bad": 100,
+    "threshold": 45.63045768737793,
+    "image_auroc": 0.6997,
+    "pixel_auroc": 0.9359492690794085,
+    "aupro": 0.7806173410885222,
+    "escape_rate_at_target_frr": 0.89,
+    "frr_at_calibration_target": 0.011111111111111112,
+    "few_shot_image_auroc": {
+      "1": 0.4771,
+      "5": 0.5878000000000001,
+      "10": 0.6138,
+      "50": 0.5957000000000001
+    },
+    "seed": 0
+  }
+}

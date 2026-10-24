@@ -1,0 +1,39 @@
+{
+  "dataset": "visa",
+  "method": "patchcore",
+  "category": "pcb4",
+  "seed": 0,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T08:02:19.354923+00:00",
+  "wall_seconds": 991.1,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "937f549",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "pcb4",
+    "method": "patchcore",
+    "n_fit": 723,
+    "n_cal": 90,
+    "n_holdout": 91,
+    "n_test_good": 101,
+    "n_test_bad": 100,
+    "threshold": 35.002010078430175,
+    "image_auroc": 0.989009900990099,
+    "pixel_auroc": 0.939870295988484,
+    "aupro": 0.6463464607306695,
+    "escape_rate_at_target_frr": 0.09,
+    "frr_at_calibration_target": 0.01098901098901099,
+    "few_shot_image_auroc": {
+      "1": 0.6903960396039605,
+      "5": 0.8247524752475248,
+      "10": 0.7344554455445544,
+      "50": 0.9486138613861386
+    },
+    "seed": 0
+  }
+}
