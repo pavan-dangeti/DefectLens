@@ -1,0 +1,39 @@
+{
+  "dataset": "mvtec",
+  "method": "patchcore",
+  "category": "grid",
+  "seed": 0,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T08:48:46.927640+00:00",
+  "wall_seconds": 269.3,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "233fb9c",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "grid",
+    "method": "patchcore",
+    "n_fit": 211,
+    "n_cal": 26,
+    "n_holdout": 27,
+    "n_test_good": 21,
+    "n_test_bad": 57,
+    "threshold": 35.714956283569336,
+    "image_auroc": 0.9523809523809523,
+    "pixel_auroc": 0.9629017941844,
+    "aupro": 0.8340605923466897,
+    "escape_rate_at_target_frr": 0.08771929824561403,
+    "frr_at_calibration_target": 0.07407407407407407,
+    "few_shot_image_auroc": {
+      "1": 0.6591478696741855,
+      "5": 0.5697577276524646,
+      "10": 0.6340852130325815,
+      "50": 0.899749373433584
+    },
+    "seed": 0
+  }
+}
