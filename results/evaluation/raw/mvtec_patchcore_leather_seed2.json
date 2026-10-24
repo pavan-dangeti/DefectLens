@@ -1,0 +1,39 @@
+{
+  "dataset": "mvtec",
+  "method": "patchcore",
+  "category": "leather",
+  "seed": 2,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T11:31:12.995621+00:00",
+  "wall_seconds": 282.6,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "3442b26",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "leather",
+    "method": "patchcore",
+    "n_fit": 196,
+    "n_cal": 24,
+    "n_holdout": 25,
+    "n_test_good": 32,
+    "n_test_bad": 92,
+    "threshold": 28.91775764465332,
+    "image_auroc": 1.0,
+    "pixel_auroc": 0.9862090907199899,
+    "aupro": 0.9510181598406708,
+    "escape_rate_at_target_frr": 0.0,
+    "frr_at_calibration_target": 0.08,
+    "few_shot_image_auroc": {
+      "1": 1.0,
+      "5": 1.0,
+      "10": 1.0,
+      "50": 1.0
+    },
+    "seed": 2
+  }
+}

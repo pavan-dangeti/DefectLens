@@ -1,0 +1,39 @@
+{
+  "dataset": "mvtec",
+  "method": "patchcore",
+  "category": "metal_nut",
+  "seed": 1,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T10:23:28.884591+00:00",
+  "wall_seconds": 303.1,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "3442b26",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "metal_nut",
+    "method": "patchcore",
+    "n_fit": 176,
+    "n_cal": 22,
+    "n_holdout": 22,
+    "n_test_good": 22,
+    "n_test_bad": 93,
+    "threshold": 46.42630577087402,
+    "image_auroc": 0.9926686217008798,
+    "pixel_auroc": 0.9737154640440593,
+    "aupro": 0.8676969740449139,
+    "escape_rate_at_target_frr": 0.010752688172043012,
+    "frr_at_calibration_target": 0.18181818181818182,
+    "few_shot_image_auroc": {
+      "1": 0.446236559139785,
+      "5": 0.8132942326490714,
+      "10": 0.761485826001955,
+      "50": 0.7502443792766373
+    },
+    "seed": 1
+  }
+}

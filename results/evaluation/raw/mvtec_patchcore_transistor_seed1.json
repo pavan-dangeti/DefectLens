@@ -1,0 +1,39 @@
+{
+  "dataset": "mvtec",
+  "method": "patchcore",
+  "category": "transistor",
+  "seed": 1,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T10:48:49.934494+00:00",
+  "wall_seconds": 278.7,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "3442b26",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "transistor",
+    "method": "patchcore",
+    "n_fit": 170,
+    "n_cal": 21,
+    "n_holdout": 22,
+    "n_test_good": 60,
+    "n_test_bad": 40,
+    "threshold": 42.18895721435547,
+    "image_auroc": 0.9966666666666667,
+    "pixel_auroc": 0.9235750379485047,
+    "aupro": 0.8573665714794493,
+    "escape_rate_at_target_frr": 0.0,
+    "frr_at_calibration_target": 0.22727272727272727,
+    "few_shot_image_auroc": {
+      "1": 0.6908333333333333,
+      "5": 0.9070833333333334,
+      "10": 0.7758333333333333,
+      "50": 0.97125
+    },
+    "seed": 1
+  }
+}
