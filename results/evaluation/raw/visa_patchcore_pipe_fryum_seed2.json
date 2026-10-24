@@ -1,0 +1,39 @@
+{
+  "dataset": "visa",
+  "method": "patchcore",
+  "category": "pipe_fryum",
+  "seed": 2,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T17:24:02.018378+00:00",
+  "wall_seconds": 440.9,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "3442b26",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "pipe_fryum",
+    "method": "patchcore",
+    "n_fit": 360,
+    "n_cal": 45,
+    "n_holdout": 45,
+    "n_test_good": 50,
+    "n_test_bad": 100,
+    "threshold": 41.6188609313965,
+    "image_auroc": 0.9946,
+    "pixel_auroc": 0.9816639663694113,
+    "aupro": 0.8636274124926029,
+    "escape_rate_at_target_frr": 0.38,
+    "frr_at_calibration_target": 0.0,
+    "few_shot_image_auroc": {
+      "1": 0.8276000000000001,
+      "5": 0.9032,
+      "10": 0.9584,
+      "50": 0.9754
+    },
+    "seed": 2
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "dataset": "mvtec",
+  "method": "patchcore",
+  "category": "pill",
+  "seed": 2,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T11:40:14.587576+00:00",
+  "wall_seconds": 344.6,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "3442b26",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "pill",
+    "method": "patchcore",
+    "n_fit": 213,
+    "n_cal": 26,
+    "n_holdout": 28,
+    "n_test_good": 26,
+    "n_test_bad": 141,
+    "threshold": 39.45432758331299,
+    "image_auroc": 0.9585379159847245,
+    "pixel_auroc": 0.9591477579867128,
+    "aupro": 0.8972420171592848,
+    "escape_rate_at_target_frr": 0.18439716312056736,
+    "frr_at_calibration_target": 0.07142857142857142,
+    "few_shot_image_auroc": {
+      "1": 0.6743044189852702,
+      "5": 0.6732133115111839,
+      "10": 0.8379705400981996,
+      "50": 0.9489907255864702
+    },
+    "seed": 2
+  }
+}

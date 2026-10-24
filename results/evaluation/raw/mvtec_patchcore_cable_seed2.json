@@ -1,0 +1,39 @@
+{
+  "dataset": "mvtec",
+  "method": "patchcore",
+  "category": "cable",
+  "seed": 2,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T11:06:58.387298+00:00",
+  "wall_seconds": 307.7,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "3442b26",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "cable",
+    "method": "patchcore",
+    "n_fit": 179,
+    "n_cal": 22,
+    "n_holdout": 23,
+    "n_test_good": 58,
+    "n_test_bad": 92,
+    "threshold": 49.641658821105956,
+    "image_auroc": 0.9593328335832084,
+    "pixel_auroc": 0.9519147408238731,
+    "aupro": 0.8157310231804609,
+    "escape_rate_at_target_frr": 0.17391304347826086,
+    "frr_at_calibration_target": 0.0,
+    "few_shot_image_auroc": {
+      "1": 0.6291229385307346,
+      "5": 0.9006746626686657,
+      "10": 0.9192278860569716,
+      "50": 0.9604572713643179
+    },
+    "seed": 2
+  }
+}

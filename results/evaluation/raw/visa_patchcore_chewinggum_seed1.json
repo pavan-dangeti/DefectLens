@@ -1,0 +1,39 @@
+{
+  "dataset": "visa",
+  "method": "patchcore",
+  "category": "chewinggum",
+  "seed": 1,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T12:42:22.749288+00:00",
+  "wall_seconds": 507.6,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "3442b26",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "chewinggum",
+    "method": "patchcore",
+    "n_fit": 362,
+    "n_cal": 45,
+    "n_holdout": 46,
+    "n_test_good": 50,
+    "n_test_bad": 100,
+    "threshold": 38.1823112487793,
+    "image_auroc": 0.9804,
+    "pixel_auroc": 0.9800926665413772,
+    "aupro": 0.7688918683527006,
+    "escape_rate_at_target_frr": 0.06,
+    "frr_at_calibration_target": 0.0,
+    "few_shot_image_auroc": {
+      "1": 0.7494,
+      "5": 0.9296,
+      "10": 0.9314000000000001,
+      "50": 0.9892
+    },
+    "seed": 1
+  }
+}

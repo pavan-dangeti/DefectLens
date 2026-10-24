@@ -1,0 +1,38 @@
+{
+  "dataset": "mvtec",
+  "method": "patchcore",
+  "category": "toothbrush",
+  "seed": 2,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T11:56:26.753148+00:00",
+  "wall_seconds": 58.4,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "3442b26",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "toothbrush",
+    "method": "patchcore",
+    "n_fit": 48,
+    "n_cal": 6,
+    "n_holdout": 6,
+    "n_test_good": 12,
+    "n_test_bad": 30,
+    "threshold": 43.04909381866455,
+    "image_auroc": 0.8666666666666668,
+    "pixel_auroc": 0.9723601697742239,
+    "aupro": 0.704934896123089,
+    "escape_rate_at_target_frr": 0.23333333333333334,
+    "frr_at_calibration_target": 0.16666666666666666,
+    "few_shot_image_auroc": {
+      "1": 0.788888888888889,
+      "5": 0.7138888888888889,
+      "10": 0.8638888888888888
+    },
+    "seed": 2
+  }
+}

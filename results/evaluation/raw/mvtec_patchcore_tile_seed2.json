@@ -1,0 +1,39 @@
+{
+  "dataset": "mvtec",
+  "method": "patchcore",
+  "category": "tile",
+  "seed": 2,
+  "coreset_ratio": 0.01,
+  "started_utc": "2026-10-24T11:52:00.567684+00:00",
+  "wall_seconds": 266.1,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "3442b26",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "tile",
+    "method": "patchcore",
+    "n_fit": 184,
+    "n_cal": 23,
+    "n_holdout": 23,
+    "n_test_good": 33,
+    "n_test_bad": 84,
+    "threshold": 36.607389221191404,
+    "image_auroc": 0.9902597402597403,
+    "pixel_auroc": 0.925803000036454,
+    "aupro": 0.7350753873675694,
+    "escape_rate_at_target_frr": 0.011904761904761904,
+    "frr_at_calibration_target": 0.043478260869565216,
+    "few_shot_image_auroc": {
+      "1": 0.9945887445887447,
+      "5": 0.9902597402597403,
+      "10": 0.9888167388167388,
+      "50": 0.9873737373737375
+    },
+    "seed": 2
+  }
+}
