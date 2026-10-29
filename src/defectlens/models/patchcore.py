@@ -41,8 +41,17 @@ class PatchCore(nn.Module):
         self._coreset: torch.Tensor | None = None
         self.category: str | None = None
         self.threshold: float = 0.0
+        # Calibration-set scores, kept so serving can compare live scores against them (drift).
+        self.reference_scores: torch.Tensor | None = None
 
-    def save(self, path: Path, *, category: str, threshold: float) -> None:
+    def save(
+        self,
+        path: Path,
+        *,
+        category: str,
+        threshold: float,
+        reference_scores: torch.Tensor | None = None,
+    ) -> None:
         """Persist the fitted coreset plus the config needed to rebuild it.
 
         The backbone is frozen and never trained, so the coreset is only valid for the same
@@ -63,6 +72,7 @@ class PatchCore(nn.Module):
                 "num_neighbors": self.num_neighbors,
                 "seed": self.seed,
                 "coreset": self._coreset,
+                "reference_scores": reference_scores,
             },
             path,
         )
@@ -86,6 +96,8 @@ class PatchCore(nn.Module):
         model._coreset = blob["coreset"]
         model.category = blob["category"]
         model.threshold = blob["threshold"]
+        # Older artefacts have no reference scores; drift monitoring is then simply not enabled.
+        model.reference_scores = blob.get("reference_scores")
         return model
 
     def _bank_for(self, images: torch.Tensor) -> torch.Tensor:

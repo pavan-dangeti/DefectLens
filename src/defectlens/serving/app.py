@@ -28,6 +28,7 @@ from PIL import Image
 from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
 from defectlens.serving import metrics as m
+from defectlens.serving.drift import DriftMonitor, DriftStatus
 from defectlens.serving.imaging import Decoded, decode_image
 from defectlens.serving.limits import MAX_BATCH, SlidingWindowLimiter, client_key
 from defectlens.serving.logs import ACCESS_LOGGER
@@ -237,6 +238,15 @@ def _score_images(
     return outcomes
 
 
+def _publish_drift(category: str, status: DriftStatus) -> None:
+    if status.ks is None or status.flag_rate is None:
+        return  # the window is not full yet
+    m.DRIFT_KS.labels(category).set(status.ks)
+    m.FLAG_RATE_WINDOW.labels(category).set(status.flag_rate)
+    m.DRIFT_ALERT.labels(category, "score").set(float(status.ks_alert))
+    m.DRIFT_ALERT.labels(category, "decision").set(float(status.rate_alert))
+
+
 def _record(
     *,
     category: str,
@@ -251,6 +261,9 @@ def _record(
     decision = "anomaly" if score > thresh else "good"
     m.DECISIONS.labels(category, decision).inc()
     m.ANOMALY_SCORE.labels(category).observe(score)
+    monitor: DriftMonitor | None = state.get("drift")
+    if monitor is not None:
+        _publish_drift(category, monitor.observe(score))
     for reason in reasons:
         m.LOW_CONFIDENCE.labels(reason).inc()
     result: dict[str, Any] = {

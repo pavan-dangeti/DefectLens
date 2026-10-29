@@ -131,7 +131,12 @@ def fit(
     threshold = float(np.quantile(cal_scores.detach().numpy(), 1.0 - target_frr))
 
     out.mkdir(parents=True, exist_ok=True)
-    model.save(out / f"{category}.pt", category=category, threshold=threshold)
+    model.save(
+        out / f"{category}.pt",
+        category=category,
+        threshold=threshold,
+        reference_scores=cal_scores.detach().cpu(),
+    )
     write_sidecar(out / f"{category}.pt")
     console.print(
         f"  artefact:  {out / f'{category}.pt'}\n"
