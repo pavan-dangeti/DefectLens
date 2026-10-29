@@ -1,0 +1,29 @@
+{
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "machine": "arm64",
+  "torch": "2.14.1",
+  "engine": "qnnpack",
+  "categories": [
+    {
+      "dataset": "mvtec",
+      "category": "screw",
+      "latency_ms_fp32_median": 29.24,
+      "latency_ms_int8_median": 89.39,
+      "embedding_cosine_mean_16_images": 0.8654
+    },
+    {
+      "dataset": "mvtec",
+      "category": "toothbrush",
+      "latency_ms_fp32_median": 28.89,
+      "latency_ms_int8_median": 89.54,
+      "embedding_cosine_mean_16_images": 0.9008
+    },
+    {
+      "dataset": "visa",
+      "category": "capsules",
+      "latency_ms_fp32_median": 28.87,
+      "latency_ms_int8_median": 88.7,
+      "embedding_cosine_mean_16_images": 0.9835
+    }
+  ]
+}

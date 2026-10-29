@@ -1,0 +1,52 @@
+{
+  "dataset": "mvtec",
+  "category": "screw",
+  "calibration_images": 32,
+  "engine": "qnnpack",
+  "fp32_committed": {
+    "category": "screw",
+    "method": "patchcore",
+    "n_fit": 256,
+    "n_cal": 32,
+    "n_holdout": 32,
+    "n_test_good": 41,
+    "n_test_bad": 119,
+    "threshold": 44.35634876251221,
+    "image_auroc": 0.7868415658946505,
+    "pixel_auroc": 0.9688215737376618,
+    "aupro": 0.872560348197,
+    "escape_rate_at_target_frr": 0.7563025210084033,
+    "frr_at_calibration_target": 0.0625,
+    "few_shot_image_auroc": {
+      "1": 0.4373847099815536,
+      "5": 0.48309079729452764,
+      "10": 0.5460135273621644,
+      "50": 0.5025620004099202
+    },
+    "seed": 0
+  },
+  "int8": {
+    "category": "screw",
+    "method": "patchcore",
+    "n_fit": 256,
+    "n_cal": 32,
+    "n_holdout": 32,
+    "n_test_good": 41,
+    "n_test_bad": 119,
+    "threshold": 44.719494590759275,
+    "image_auroc": 0.8233244517319123,
+    "pixel_auroc": 0.9703872830698197,
+    "aupro": 0.8646570238581269,
+    "escape_rate_at_target_frr": 0.7310924369747899,
+    "frr_at_calibration_target": 0.0,
+    "few_shot_image_auroc": {
+      "1": 0.41340438614470176,
+      "5": 0.47837671654027464,
+      "10": 0.5148596023775364,
+      "50": 0.5781922525107605
+    },
+    "seed": 0
+  },
+  "wall_seconds_accuracy": 122.9,
+  "git_commit": "9992cc5aa7d5b94f2e35d28e4eabc4cc5674963c"
+}
