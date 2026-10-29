@@ -54,3 +54,20 @@ def load_dataset_by_name(name: str, root: Path = Path("configs/datasets")) -> Da
 
 def load_settings() -> Settings:
     return Settings()
+
+
+class CoresetConfig(BaseModel):
+    """Coreset ratio per category: the default for every category not listed in ``categories``."""
+
+    default: float = Field(0.01, gt=0.0, le=1.0)
+    categories: dict[str, float] = Field(default_factory=dict)
+
+    def ratio_for(self, category: str) -> float:
+        return self.categories.get(category, self.default)
+
+
+def load_coreset_config(path: Path = Path("configs/coreset.yaml")) -> CoresetConfig:
+    raw = yaml.safe_load(path.read_text()) or {}
+    if not isinstance(raw, dict):
+        raise ValueError(f"{path} must be a mapping with 'default' and 'categories'")
+    return CoresetConfig.model_validate(raw)

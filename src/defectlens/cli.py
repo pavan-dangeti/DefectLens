@@ -8,7 +8,7 @@ import typer
 from rich.console import Console
 
 from defectlens import __version__
-from defectlens.config import load_dataset_by_name, load_settings
+from defectlens.config import load_coreset_config, load_dataset_by_name, load_settings
 from defectlens.data.download import download_archive
 from defectlens.data.manifest import build_manifest, read_manifest, write_manifest
 
@@ -95,7 +95,11 @@ def fit(
     root: Path = typer.Option(..., "--root", help="Dataset root with <category>/train/good."),
     category: str = typer.Option(..., "--category", help="Category to fit."),
     out: Path = typer.Option(..., "--out", help="Registry directory to write <category>.pt into."),
-    coreset_ratio: float = typer.Option(0.01, "--coreset-ratio"),
+    coreset_ratio: float | None = typer.Option(
+        None,
+        "--coreset-ratio",
+        help="Overrides configs/coreset.yaml for this category; the default there is 0.01.",
+    ),
     target_frr: float = typer.Option(0.01, "--target-frr"),
     seed: int = typer.Option(0, "--seed"),
     backbone: str = typer.Option("wide_resnet50_2", "--backbone"),
@@ -123,6 +127,8 @@ def fit(
         raise typer.BadParameter(f"no training images under {root / category / 'train' / 'good'}")
     fit_paths, cal_paths, _ = _fit_calibration_splits(train_good, seed)
     fit_paths = [*fit_paths, *_confirmed_good(review_log, category)]
+    if coreset_ratio is None:
+        coreset_ratio = load_coreset_config().ratio_for(category)
     model = PatchCore(
         backbone=backbone, coreset_ratio=coreset_ratio, seed=seed, pretrained=pretrained
     )

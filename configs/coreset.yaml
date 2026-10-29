@@ -1,0 +1,12 @@
+# Coreset ratio used when a category is fitted with `defectlens fit` and no --coreset-ratio is given.
+#
+# 0.01 is the production default: a memory bank about 10x smaller and predictions about 3x faster than
+# 0.1, at a cost of some AUPRO. Choose 0.1 for a category only when its localisation matters more than
+# latency and disk: see docs/adr/0008-production-coreset-ratio.md for the measured trade-off.
+#
+# Changing a ratio changes the decision threshold for that category, so recalibrate and refit it.
+default: 0.01
+
+# Per-category overrides, for example:
+#   capsules: 0.1
+categories: {}

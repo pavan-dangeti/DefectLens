@@ -66,3 +66,33 @@ def test_load_dataset_config_rejects_non_mapping(tmp_path: Path) -> None:
     bad.write_text("- just\n- a\n- list\n")
     with pytest.raises(ValueError, match="mapping"):
         load_dataset_config(bad)
+
+
+def test_coreset_ratio_defaults_to_one_percent_for_every_category() -> None:
+    from defectlens.config import load_coreset_config
+
+    config = load_coreset_config(Path("configs/coreset.yaml"))
+    assert config.ratio_for("capsules") == 0.01
+    assert config.ratio_for("bottle") == 0.01
+
+
+def test_coreset_ratio_override_applies_to_one_category(tmp_path: Path) -> None:
+    from defectlens.config import load_coreset_config
+
+    path = tmp_path / "coreset.yaml"
+    path.write_text("default: 0.01\ncategories:\n  capsules: 0.1\n")
+    config = load_coreset_config(path)
+    assert config.ratio_for("capsules") == 0.1
+    assert config.ratio_for("macaroni1") == 0.01
+
+
+@pytest.mark.parametrize("ratio", ["0", "1.5", "-0.1"])
+def test_coreset_ratio_must_be_in_range(tmp_path: Path, ratio: str) -> None:
+    from pydantic import ValidationError
+
+    from defectlens.config import load_coreset_config
+
+    path = tmp_path / "coreset.yaml"
+    path.write_text(f"default: {ratio}\n")
+    with pytest.raises(ValidationError):
+        load_coreset_config(path)
