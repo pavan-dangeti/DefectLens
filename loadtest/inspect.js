@@ -29,7 +29,7 @@ const scenario = __ENV.RATE
   ? {
       executor: 'constant-arrival-rate',
       rate: Number(__ENV.RATE),
-      timeUnit: '1s',
+      timeUnit: __ENV.TIME_UNIT || '1s',
       duration: __ENV.DURATION || '2m',
       preAllocatedVUs: 20,
       maxVUs: 200,
