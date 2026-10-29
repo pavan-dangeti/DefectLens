@@ -114,6 +114,7 @@ def fit(
 
     from defectlens.eval.benchmark import VALID_EXT, _fit_calibration_splits, _to_tensors
     from defectlens.models.patchcore import PatchCore
+    from defectlens.serving.checksums import write_sidecar
 
     train_good = sorted(
         p for p in (root / category / "train" / "good").iterdir() if p.suffix.lower() in VALID_EXT
@@ -131,6 +132,7 @@ def fit(
 
     out.mkdir(parents=True, exist_ok=True)
     model.save(out / f"{category}.pt", category=category, threshold=threshold)
+    write_sidecar(out / f"{category}.pt")
     console.print(
         f"  artefact:  {out / f'{category}.pt'}\n"
         f"  fit on:    {len(fit_paths)} nominal images\n"
@@ -163,13 +165,16 @@ def serve(
     import uvicorn
 
     from defectlens.serving.app import create_app
+    from defectlens.serving.logs import configure_json_logging
     from defectlens.serving.registry import load_registry
 
     settings = load_settings()
+    configure_json_logging()
     app = create_app(
         models=load_registry(registry) if registry else {},
         spool_dir=settings.artifacts_dir / "queue",
         review_log=settings.artifacts_dir / "reviews.jsonl",
+        max_upload_mb=settings.max_upload_mb,
     )
     console.print(f"  registry:  {registry or '(none — /ready will report 503)'}")
     uvicorn.run(app, host=host or settings.host, port=port or settings.port)
