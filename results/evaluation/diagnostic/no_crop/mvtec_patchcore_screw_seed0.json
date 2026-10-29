@@ -1,0 +1,26 @@
+{
+  "category": "screw",
+  "variant": "no_crop",
+  "config": {
+    "coreset_ratio": 0.01,
+    "fit_all": false,
+    "resize": 256,
+    "crop": null,
+    "seed": 0,
+    "backbone": "wide_resnet50_2",
+    "layers": [
+      "layer2",
+      "layer3"
+    ]
+  },
+  "n_fit": 256,
+  "n_test_good": 41,
+  "n_test_bad": 119,
+  "metrics": {
+    "image_auroc": 0.7692150030744005,
+    "pixel_auroc": 0.9746696470772424,
+    "aupro": 0.8838765980255114
+  },
+  "wall_seconds": 169.4,
+  "git_commit": "e0a5e454b31643fccb6f966e4d26cbc85a082b48"
+}

@@ -1,0 +1,26 @@
+{
+  "category": "toothbrush",
+  "variant": "fit_all",
+  "config": {
+    "coreset_ratio": 0.01,
+    "fit_all": true,
+    "resize": 256,
+    "crop": 224,
+    "seed": 0,
+    "backbone": "wide_resnet50_2",
+    "layers": [
+      "layer2",
+      "layer3"
+    ]
+  },
+  "n_fit": 60,
+  "n_test_good": 12,
+  "n_test_bad": 30,
+  "metrics": {
+    "image_auroc": 0.9833333333333334,
+    "pixel_auroc": 0.9774677549737547,
+    "aupro": 0.7726602965605969
+  },
+  "wall_seconds": 21.4,
+  "git_commit": "0610f4da6ee36934d3fb80df87051df9dd0950bb"
+}

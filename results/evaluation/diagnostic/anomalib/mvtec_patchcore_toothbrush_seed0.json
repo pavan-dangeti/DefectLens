@@ -1,0 +1,26 @@
+{
+  "category": "toothbrush",
+  "variant": "anomalib",
+  "config": {
+    "coreset_ratio": 0.1,
+    "fit_all": true,
+    "resize": 256,
+    "crop": null,
+    "seed": 0,
+    "backbone": "wide_resnet50_2",
+    "layers": [
+      "layer2",
+      "layer3"
+    ]
+  },
+  "n_fit": 60,
+  "n_test_good": 12,
+  "n_test_bad": 30,
+  "metrics": {
+    "image_auroc": 0.9222222222222223,
+    "pixel_auroc": 0.9840459508681421,
+    "aupro": 0.8404385319515677
+  },
+  "wall_seconds": 32.3,
+  "git_commit": "94f2741c39761ec8df6a06bbe29f944d446a6a74"
+}
