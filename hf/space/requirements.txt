@@ -1,0 +1,7 @@
+gradio==6.30.0
+huggingface_hub
+timm
+torch
+# defectlens itself: installed from the GitHub repository at the v1.0.0 tag. The repository is private
+# today, so this line needs either the repository to be public or a token. See the release checklist.
+defectlens @ git+https://github.com/pavan-dangeti/DefectLens@v1.0.0

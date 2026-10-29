@@ -34,10 +34,16 @@ three-seed evaluation on MVTec AD and VisA, drift monitoring, and an operations 
   is in the README.
 - **CI.** Lint, strict type checking, tests with an 85% coverage gate, a dependency audit (`pip-audit`),
   and an image scan (Trivy).
+- **Coreset ratio per category.** `configs/coreset.yaml` sets the default to 0.01, with per-category
+  overrides. The production default is 0.01 (ADR-0008): a bank about 10 times smaller and predictions
+  about 3 times faster than 0.1, for an AUPRO cost of about 0.034 on the VisA sample.
+- **Runbook and model card.** `docs/runbook.md` and `docs/model-card.md`.
 
 ### Changed
 
 - `defectlens serve` binds `127.0.0.1` by default. The container image binds `0.0.0.0` explicitly.
+- The VisA dataset config lists the category as `candle`, matching the folder name.
+- `configs/default.yaml`, which nothing read, is removed.
 
 ### Negative results (kept out of the release)
 
