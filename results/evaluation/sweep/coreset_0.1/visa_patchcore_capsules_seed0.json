@@ -1,0 +1,39 @@
+{
+  "dataset": "visa",
+  "method": "patchcore",
+  "category": "capsules",
+  "seed": 0,
+  "coreset_ratio": 0.1,
+  "started_utc": "2026-10-24T17:31:34.368502+00:00",
+  "wall_seconds": 1479.6,
+  "environment": {
+    "defectlens": "0.1.0",
+    "git_commit": "4b280dd",
+    "python": "3.11.16",
+    "torch": "2.14.1",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "cpu": "Apple M5"
+  },
+  "metrics": {
+    "category": "capsules",
+    "method": "patchcore",
+    "n_fit": 433,
+    "n_cal": 54,
+    "n_holdout": 55,
+    "n_test_good": 60,
+    "n_test_bad": 100,
+    "threshold": 45.87102798461914,
+    "image_auroc": 0.7056666666666666,
+    "pixel_auroc": 0.9603528775868456,
+    "aupro": 0.6130968527206442,
+    "escape_rate_at_target_frr": 0.66,
+    "frr_at_calibration_target": 0.0,
+    "few_shot_image_auroc": {
+      "1": 0.6376666666666668,
+      "5": 0.7061666666666667,
+      "10": 0.7038333333333333,
+      "50": 0.6854999999999999
+    },
+    "seed": 0
+  }
+}
