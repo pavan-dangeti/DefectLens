@@ -12,8 +12,16 @@ from typing import Any
 
 from defectlens.models.patchcore import PatchCore
 from defectlens.serving.checksums import verify_sidecar
+from defectlens.serving.drift import DriftMonitor
 
 ARTIFACT_GLOB = "*.pt"
+
+
+def _drift_monitor(model: PatchCore) -> DriftMonitor | None:
+    """Drift monitoring needs the calibration scores; artefacts without them run unmonitored."""
+    if model.reference_scores is None:
+        return None
+    return DriftMonitor(model.reference_scores.numpy(), threshold=model.threshold)
 
 
 def load_registry(root: Path) -> dict[str, dict[str, Any]]:
@@ -39,5 +47,6 @@ def load_registry(root: Path) -> dict[str, dict[str, Any]]:
             "model": model,
             "threshold": model.threshold,
             "version": path.stem,
+            "drift": _drift_monitor(model),
         }
     return registry

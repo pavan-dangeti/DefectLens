@@ -60,6 +60,24 @@ MODELS_LOADED = Gauge(
     "Models loaded and ready to score.",
     registry=REGISTRY,
 )
+DRIFT_KS = Gauge(
+    "defectlens_score_drift_ks",
+    "Kolmogorov-Smirnov statistic of recent anomaly scores against the calibration scores.",
+    ["category"],
+    registry=REGISTRY,
+)
+FLAG_RATE_WINDOW = Gauge(
+    "defectlens_flag_rate_window",
+    "Share of the most recent images flagged as anomalous.",
+    ["category"],
+    registry=REGISTRY,
+)
+DRIFT_ALERT = Gauge(
+    "defectlens_drift_alert",
+    "1 while a drift alert is active, by kind: score (KS) or decision (flag rate).",
+    ["category", "kind"],
+    registry=REGISTRY,
+)
 REVIEW_PENDING = Gauge(
     "review_cases_pending",
     "Flagged cases awaiting a human review label.",
