@@ -29,7 +29,7 @@ from prometheus_client import CONTENT_TYPE_LATEST, generate_latest
 
 from defectlens.serving import metrics as m
 from defectlens.serving.imaging import Decoded, decode_image
-from defectlens.serving.limits import MAX_BATCH, SlidingWindowLimiter
+from defectlens.serving.limits import MAX_BATCH, SlidingWindowLimiter, client_key
 from defectlens.serving.logs import ACCESS_LOGGER
 
 _MODEL_STATE: dict[str, dict[str, Any]] = {}
@@ -43,7 +43,6 @@ _SLOTS = threading.BoundedSemaphore(2)
 # "confirmed-good" is the only label that feeds a rebuild; the other two record rejections.
 LABELS = frozenset({"confirmed-good", "confirmed-defect", "false-positive"})
 
-RATE_LIMITED_ROUTES = frozenset({"/inspect", "/inspect/batch"})
 KNOWN_ROUTES = frozenset(
     {
         "/health",
@@ -107,11 +106,13 @@ def review_image(case_id: str) -> FileResponse:
 
 @router.post("/inspect")
 async def inspect(
+    request: Request,
     category: str,
     threshold: float | None = None,
     file: UploadFile = File(...),
 ) -> dict[str, Any]:
     _require_category(category)
+    _charge(request, 1)
     raw = await _read_upload(file)
     outcome = (await _score_request(category, [raw], threshold))[0]
     if isinstance(outcome, HTTPException):
@@ -121,6 +122,7 @@ async def inspect(
 
 @router.post("/inspect/batch")
 async def inspect_batch(
+    request: Request,
     category: str,
     files: list[UploadFile] = File(...),
     threshold: float | None = None,
@@ -128,6 +130,7 @@ async def inspect_batch(
     _require_category(category)
     if len(files) > MAX_BATCH:
         raise HTTPException(status_code=413, detail=f"at most {MAX_BATCH} images per batch")
+    _charge(request, len(files))
     raws = [await _read_upload(item) for item in files]
     outcomes = await _score_request(category, raws, threshold)
     results: list[dict[str, Any]] = []
@@ -144,6 +147,19 @@ async def inspect_batch(
 def _require_category(category: str) -> None:
     if category not in _MODEL_STATE:
         raise HTTPException(status_code=404, detail=f"category {category!r} not loaded")
+
+
+def _charge(request: Request, units: int) -> None:
+    # Charged per image in the endpoint, not per request in the middleware, so a batch pays for
+    # every image it carries. The client address keys the budget only and is never logged.
+    if _LIMITER is None:
+        return
+    host = request.client.host if request.client else "unknown"
+    if not _LIMITER.allow(client_key(host), cost=units):
+        m.REJECTED.labels(reason="rate_limited").inc()
+        raise HTTPException(
+            status_code=429, detail="rate limit exceeded", headers={"Retry-After": "60"}
+        )
 
 
 async def _read_upload(file: UploadFile) -> bytes:
@@ -305,21 +321,7 @@ async def _observe(
     started = time.perf_counter()
     request_id = _incoming_request_id(request.headers.get("x-request-id"))
     route = _route_label(request.url.path)
-    # The client address keys the rate limit only. It is not logged: nothing downstream needs it.
-    client = request.client.host if request.client else "unknown"
-    limited = (
-        request.method == "POST"
-        and route in RATE_LIMITED_ROUTES
-        and _LIMITER is not None
-        and not _LIMITER.allow(client)
-    )
-    if limited:
-        m.REJECTED.labels(reason="rate_limited").inc()
-        response: Response = JSONResponse(
-            {"detail": "rate limit exceeded"}, status_code=429, headers={"Retry-After": "60"}
-        )
-    else:
-        response = await call_next(request)
+    response = await call_next(request)
 
     duration = time.perf_counter() - started
     m.REQUESTS.labels(route, str(response.status_code)).inc()
