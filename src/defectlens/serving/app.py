@@ -43,6 +43,9 @@ _SLOTS = threading.BoundedSemaphore(2)
 # "confirmed-good" is the only label that feeds a rebuild; the other two record rejections.
 LABELS = frozenset({"confirmed-good", "confirmed-defect", "false-positive"})
 
+RATE_LIMITED_ROUTES = frozenset({"/inspect", "/inspect/batch"})
+# Multipart framing adds a little to the declared body size on top of the image bytes.
+_MULTIPART_SLACK_BYTES = 64 * 1024
 KNOWN_ROUTES = frozenset(
     {
         "/health",
@@ -111,8 +114,8 @@ async def inspect(
     threshold: float | None = None,
     file: UploadFile = File(...),
 ) -> dict[str, Any]:
-    _require_category(category)
     _charge(request, 1)
+    _require_category(category)
     raw = await _read_upload(file)
     outcome = (await _score_request(category, [raw], threshold))[0]
     if isinstance(outcome, HTTPException):
@@ -127,10 +130,10 @@ async def inspect_batch(
     files: list[UploadFile] = File(...),
     threshold: float | None = None,
 ) -> dict[str, Any]:
+    _charge(request, len(files))
     _require_category(category)
     if len(files) > MAX_BATCH:
         raise HTTPException(status_code=413, detail=f"at most {MAX_BATCH} images per batch")
-    _charge(request, len(files))
     raws = [await _read_upload(item) for item in files]
     outcomes = await _score_request(category, raws, threshold)
     results: list[dict[str, Any]] = []
@@ -309,6 +312,27 @@ def _route_label(path: str) -> str:
     return path if path in KNOWN_ROUTES else "other"
 
 
+def _client_host(request: Request) -> str:
+    # The address keys the rate limit only. It is never logged.
+    return request.client.host if request.client else "unknown"
+
+
+def _pre_check(request: Request, route: str) -> Response | None:
+    # Refuse cheaply before FastAPI parses the multipart body: a client already out of budget, or
+    # a declared body larger than the route could ever legitimately accept.
+    if _LIMITER is not None and _LIMITER.exhausted(client_key(_client_host(request))):
+        m.REJECTED.labels(reason="rate_limited").inc()
+        return JSONResponse(
+            {"detail": "rate limit exceeded"}, status_code=429, headers={"Retry-After": "60"}
+        )
+    declared = request.headers.get("content-length", "")
+    images = MAX_BATCH if route == "/inspect/batch" else 1
+    if declared.isdigit() and int(declared) > images * _UPLOAD_LIMIT_BYTES + _MULTIPART_SLACK_BYTES:
+        m.REJECTED.labels(reason="too_large").inc()
+        return JSONResponse({"detail": "request body too large"}, status_code=413)
+    return None
+
+
 def _incoming_request_id(value: str | None) -> str:
     if value and _REQUEST_ID.match(value):
         return value
@@ -321,7 +345,12 @@ async def _observe(
     started = time.perf_counter()
     request_id = _incoming_request_id(request.headers.get("x-request-id"))
     route = _route_label(request.url.path)
-    response = await call_next(request)
+    rejection = (
+        _pre_check(request, route)
+        if request.method == "POST" and route in RATE_LIMITED_ROUTES
+        else None
+    )
+    response = rejection if rejection is not None else await call_next(request)
 
     duration = time.perf_counter() - started
     m.REQUESTS.labels(route, str(response.status_code)).inc()
