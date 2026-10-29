@@ -11,7 +11,8 @@ forced it, and what it costs — not a design document.
 | [0004](0004-paper-protocol-over-anomalib-defaults.md) | Evaluation follows the papers' protocol, not anomalib's defaults (evaluation) | Accepted |
 | [0005](0005-backbone-by-measurement.md) | Backbone chosen by measured trade-off, not assumption (features) | Accepted |
 | [0006](0006-threshold-calibration-at-target-frr.md) | Thresholds calibrated per category at a target false-reject rate (decisioning) | Accepted |
-| [0007](0007-faiss-ivfpq-required-for-latency-slo.md) | FAISS IVF-PQ required to meet the latency SLO (optimisation) | Accepted |
+| [0007](0007-faiss-ivfpq-required-for-latency-slo.md) | FAISS IVF-PQ required to meet the latency SLO (optimisation) | Partly superseded by 0008 |
+| [0008](0008-production-coreset-ratio.md) | Coreset ratio 0.01 by default; 0.1 per category where localisation matters more (optimisation) | Accepted |
 
 ## Format
 

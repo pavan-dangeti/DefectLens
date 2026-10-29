@@ -1,0 +1,9 @@
+{
+  "category": "candle",
+  "artefact_mb": 33.1,
+  "coreset_entries": 5644,
+  "rss_before_load_mb": 406.0,
+  "rss_after_load_mb": 996.0,
+  "rss_after_predict_mb": 996.0,
+  "predictions": 30
+}

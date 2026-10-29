@@ -1,0 +1,12 @@
+{
+  "ratio": 0.01,
+  "category": "macaroni1",
+  "n_fit_images": 720,
+  "coreset_entries": 5644,
+  "coreset_dims": 1536,
+  "artefact_mb": 33.1,
+  "fit_seconds": 428.4,
+  "predict_ms_median": 60.8,
+  "predict_ms_p95": 63.6,
+  "peak_rss_mb": 8355.0
+}

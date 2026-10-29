@@ -1,0 +1,12 @@
+{
+  "ratio": 0.1,
+  "category": "capsules",
+  "n_fit_images": 433,
+  "coreset_entries": 33947,
+  "coreset_dims": 1536,
+  "artefact_mb": 198.9,
+  "fit_seconds": 862.7,
+  "predict_ms_median": 133.6,
+  "predict_ms_p95": 147.0,
+  "peak_rss_mb": 6195.0
+}

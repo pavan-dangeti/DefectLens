@@ -183,6 +183,50 @@ other than 503, no crashes, and no transport failures.
 that almost at once, so the capacity runs lift the limit on the server. The limiter's behaviour under
 load is tested separately.
 
+## Production configuration: coreset ratio
+
+The coreset ratio sets the memory bank's size and the prediction cost. The default is **0.01** for every
+category, set in [`configs/coreset.yaml`](configs/coreset.yaml). Choose **0.1** for a category when
+localisation matters more than latency and disk. The decision and its numbers are in
+[ADR-0008](docs/adr/0008-production-coreset-ratio.md).
+
+Cost on Apple Silicon, VisA, seed 0, four categories. Predictions are single-image, predict-only (no HTTP),
+median and p95 of 30 calls. Source: [`results/evaluation/coreset_cost/coreset_cost.md`](results/evaluation/coreset_cost/coreset_cost.md).
+
+| Category | Coreset ratio | Bank entries | Artefact (MB) | Predict median (ms) | Predict p95 (ms) | Fit time (s) | Peak RSS while fitting (MB) |
+|---|---|---|---|---|---|---|---|
+| candle | 0.01 | 5644 | 33.1 | 70.2 | 76.6 | 406.5 | 8664 |
+| candle | 0.1 | 56448 | 330.8 | 220.4 | 243.6 | 2574.6 | 8841 |
+| capsules | 0.01 | 3394 | 19.9 | 40.1 | 42.5 | 128.4 | 6770 |
+| capsules | 0.1 | 33947 | 198.9 | 133.6 | 147.0 | 862.7 | 6195 |
+| macaroni1 | 0.01 | 5644 | 33.1 | 60.8 | 63.6 | 428.4 | 8355 |
+| macaroni1 | 0.1 | 56448 | 330.8 | 216.3 | 238.4 | 2477.2 | 8552 |
+| macaroni2 | 0.01 | 5644 | 33.1 | 56.3 | 61.9 | 410.3 | 8904 |
+| macaroni2 | 0.1 | 56448 | 330.8 | 207.6 | 220.1 | 2441.4 | 9088 |
+
+The fit peak is offline cost, paid once per fit, and it is about the same at both ratios because the full
+bank is built before reduction.
+
+Serving process, candle at 0.01: peak resident memory **996 MB** after loading the registry and scoring 30
+images (`results/evaluation/serving_rss.json`). At 0.1 it is estimated near 1.3 GB: the bank grows by about
+300 MB. That estimate is not measured.
+
+What the trade is:
+
+- **0.01:** a bank about 10 times smaller, and predictions about 3.1 to 3.7 times faster. The cost is
+  localisation: AUPRO is about 0.034 lower on average on these four categories.
+- **0.1:** better localisation: AUPRO +0.034 on average on these four categories (seed 0), and image
+  AUROC +0.08 on the three-category MVTec diagnostic (seed 0, single seed). The cost is a bank 10 times
+  larger and predictions 3 to 4 times slower.
+
+Latency against the design's SLO-1 (p95 at most 1.5 s on a 2-core ARM VM): 0.1's p95 of 220 to 244 ms on this
+machine is within that limit unless the VM is about six times slower. 0.01's p95 of 62 to 77 ms is within it
+unless the VM is about twenty times slower. The VM has not been measured. Measure it before changing the
+default to 0.1.
+
+Changing a category's ratio changes its decision threshold: refit the category and recalibrate it before it
+serves decisions.
+
 ## INT8 quantisation
 
 Static post-training INT8 was tried as a way to cut backbone latency. It is a negative result, and the

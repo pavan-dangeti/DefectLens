@@ -1,0 +1,98 @@
+[
+  {
+    "ratio": 0.01,
+    "category": "capsules",
+    "n_fit_images": 433,
+    "coreset_entries": 3394,
+    "coreset_dims": 1536,
+    "artefact_mb": 19.9,
+    "fit_seconds": 128.4,
+    "predict_ms_median": 40.1,
+    "predict_ms_p95": 42.5,
+    "peak_rss_mb": 6770.0
+  },
+  {
+    "ratio": 0.1,
+    "category": "capsules",
+    "n_fit_images": 433,
+    "coreset_entries": 33947,
+    "coreset_dims": 1536,
+    "artefact_mb": 198.9,
+    "fit_seconds": 862.7,
+    "predict_ms_median": 133.6,
+    "predict_ms_p95": 147.0,
+    "peak_rss_mb": 6195.0
+  },
+  {
+    "ratio": 0.01,
+    "category": "macaroni1",
+    "n_fit_images": 720,
+    "coreset_entries": 5644,
+    "coreset_dims": 1536,
+    "artefact_mb": 33.1,
+    "fit_seconds": 428.4,
+    "predict_ms_median": 60.8,
+    "predict_ms_p95": 63.6,
+    "peak_rss_mb": 8355.0
+  },
+  {
+    "ratio": 0.1,
+    "category": "macaroni1",
+    "n_fit_images": 720,
+    "coreset_entries": 56448,
+    "coreset_dims": 1536,
+    "artefact_mb": 330.8,
+    "fit_seconds": 2477.2,
+    "predict_ms_median": 216.3,
+    "predict_ms_p95": 238.4,
+    "peak_rss_mb": 8552.0
+  },
+  {
+    "ratio": 0.01,
+    "category": "macaroni2",
+    "n_fit_images": 720,
+    "coreset_entries": 5644,
+    "coreset_dims": 1536,
+    "artefact_mb": 33.1,
+    "fit_seconds": 410.3,
+    "predict_ms_median": 56.3,
+    "predict_ms_p95": 61.9,
+    "peak_rss_mb": 8904.0
+  },
+  {
+    "ratio": 0.1,
+    "category": "macaroni2",
+    "n_fit_images": 720,
+    "coreset_entries": 56448,
+    "coreset_dims": 1536,
+    "artefact_mb": 330.8,
+    "fit_seconds": 2441.4,
+    "predict_ms_median": 207.6,
+    "predict_ms_p95": 220.1,
+    "peak_rss_mb": 9088.0
+  },
+  {
+    "ratio": 0.01,
+    "category": "candle",
+    "n_fit_images": 720,
+    "coreset_entries": 5644,
+    "coreset_dims": 1536,
+    "artefact_mb": 33.1,
+    "fit_seconds": 406.5,
+    "predict_ms_median": 70.2,
+    "predict_ms_p95": 76.6,
+    "peak_rss_mb": 8664.0
+  },
+  {
+    "ratio": 0.1,
+    "category": "candle",
+    "n_fit_images": 720,
+    "coreset_entries": 56448,
+    "coreset_dims": 1536,
+    "artefact_mb": 330.8,
+    "fit_seconds": 2574.6,
+    "predict_ms_median": 220.4,
+    "predict_ms_p95": 243.6,
+    "peak_rss_mb": 8841.0
+  }
+]

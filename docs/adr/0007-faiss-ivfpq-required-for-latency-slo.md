@@ -1,6 +1,9 @@
 # ADR-0007: FAISS IVF-PQ is required to meet the latency SLO, not an optional optimisation
 
-- **Status:** Accepted (2026-10-04)
+- **Status:** Accepted (2026-10-04); partly superseded by ADR-0008 for the production configuration. At
+  coreset ratio 0.01 the bank is small enough for exact search to meet the measured latency, so FAISS
+  IVF-PQ is not required there. The requirement stands for any configuration whose bank exact search
+  cannot serve within SLO-1.
 - **Deciders:** Pavan Sai Kumar Dangeti
 
 ## Context

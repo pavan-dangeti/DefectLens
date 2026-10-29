@@ -1,0 +1,12 @@
+{
+  "ratio": 0.01,
+  "category": "candle",
+  "n_fit_images": 720,
+  "coreset_entries": 5644,
+  "coreset_dims": 1536,
+  "artefact_mb": 33.1,
+  "fit_seconds": 406.5,
+  "predict_ms_median": 70.2,
+  "predict_ms_p95": 76.6,
+  "peak_rss_mb": 8664.0
+}
