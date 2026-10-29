@@ -103,7 +103,12 @@ def run(category: str, variant: str, seed: int) -> Path:
     record = {
         "category": category,
         "variant": variant,
-        "config": {**cfg, "seed": seed, "backbone": "wide_resnet50_2", "layers": ["layer2", "layer3"]},
+        "config": {
+            **cfg,
+            "seed": seed,
+            "backbone": "wide_resnet50_2",
+            "layers": ["layer2", "layer3"],
+        },
         "n_fit": len(fit),
         "n_test_good": len(split["test_good"]),
         "n_test_bad": len(split["test_bad"]),

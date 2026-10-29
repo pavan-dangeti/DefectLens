@@ -34,14 +34,18 @@ def main() -> None:
     baseline = {c: _metrics(RAW / f"mvtec_patchcore_{c}_seed0.json") for c in CATEGORIES}
     seed_range = {}
     for c in CATEGORIES:
-        seeds = [_metrics(RAW / f"mvtec_patchcore_{c}_seed{s}.json")["image_auroc"] for s in (0, 1, 2)]
+        seeds = [
+            _metrics(RAW / f"mvtec_patchcore_{c}_seed{s}.json")["image_auroc"] for s in (0, 1, 2)
+        ]
         seed_range[c] = {"image_auroc_min": min(seeds), "image_auroc_max": max(seeds)}
 
     lines = [
         "| Setting changed | " + " | ".join(f"{c}: image AUROC / AUPRO" for c in CATEGORIES) + " |",
         "|---|" + "---|" * len(CATEGORIES),
         "| ours (baseline, seed 0) | "
-        + " | ".join(f"{baseline[c]['image_auroc']:.4f} / {baseline[c]['aupro']:.4f}" for c in CATEGORIES)
+        + " | ".join(
+            f"{baseline[c]['image_auroc']:.4f} / {baseline[c]['aupro']:.4f}" for c in CATEGORIES
+        )
         + " |",
         "| ours (baseline, image AUROC range over seeds 0-2) | "
         + " | ".join(
