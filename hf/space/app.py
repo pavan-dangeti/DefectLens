@@ -48,15 +48,17 @@ def _overlay(image: Image.Image, score_map: np.ndarray) -> Image.Image:
     return Image.fromarray(tinted.astype(np.uint8))
 
 
-def inspect(image: Image.Image | None, category: str) -> tuple[str, Image.Image | None]:
-    if image is None:
+def inspect(path: str | None, category: str) -> tuple[str, Image.Image | None]:
+    if path is None:
         return "Upload a photo of a part.", None
-    buffer = io.BytesIO()
-    image.save(buffer, format="PNG")
+    # The raw bytes go straight to the serving decoder, which checks the header's pixel count before any
+    # decode. Gradio never decodes the upload itself, so an oversized image is refused before allocation.
+    raw = Path(path).read_bytes()
     try:
-        decoded = decode_image(buffer.getvalue())
+        decoded = decode_image(raw)
     except Exception as exc:  # the serving decoder raises HTTPException with a reason
         return f"Image rejected: {getattr(exc, 'detail', exc)}", None
+    image = Image.open(io.BytesIO(raw))  # safe: decode_image has already enforced the pixel cap
     model = _model(category)
     with torch.no_grad():
         scores, maps = model.predict(decoded.tensor)
@@ -88,7 +90,7 @@ with gr.Blocks(title="DefectLens demo") as demo:
     gr.Markdown(DESCRIPTION)
     with gr.Row():
         category = gr.Dropdown(CATEGORIES, value=CATEGORIES[0], label="Product category")
-        photo = gr.Image(type="pil", label="Photo of a part")
+        photo = gr.Image(type="filepath", label="Photo of a part")
     button = gr.Button("Inspect", variant="primary")
     result = gr.Textbox(label="Result", lines=3)
     heatmap = gr.Image(label="Where it differs from good parts (red = more different)")
