@@ -14,7 +14,7 @@ from datetime import UTC, datetime
 from typing import Any
 
 ACCESS_LOGGER = "defectlens.access"
-_EXTRA_FIELDS = ("request_id", "method", "route", "status", "duration_ms")
+_EXTRA_FIELDS = ("request_id", "method", "route", "path", "status", "duration_ms")
 
 
 class JsonFormatter(logging.Formatter):

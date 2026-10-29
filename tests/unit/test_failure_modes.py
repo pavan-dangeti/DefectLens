@@ -283,6 +283,15 @@ def test_access_log_carries_request_id_and_no_client_address(
     assert "client" not in line and "ip" not in line
 
 
+def test_unknown_path_is_logged_without_query_or_client(caplog: pytest.LogCaptureFixture) -> None:
+    caplog.set_level(logging.INFO, logger="defectlens.access")
+    _client().get("/wp-login.php?x=1")
+    record = next(r for r in caplog.records if getattr(r, "route", None) == "other")
+    line = json.loads(JsonFormatter().format(record))
+    assert line["path"] == "/wp-login.php"
+    assert "?" not in line["path"] and "client" not in line and "ip" not in line
+
+
 def test_metrics_expose_request_and_decision_counters() -> None:
     client = _client()
     _upload(client, _encode(Image.new("RGB", (224, 224))))

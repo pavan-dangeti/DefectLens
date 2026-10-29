@@ -356,12 +356,15 @@ async def _observe(
     m.REQUESTS.labels(route, str(response.status_code)).inc()
     m.REQUEST_SECONDS.labels(route).observe(duration)
     response.headers["X-Request-ID"] = request_id
+    # Unknown routes all share the label "other", so the path is logged for them: it shows what is
+    # probing the service. Only the path is logged, never the query string or the client address.
     _ACCESS_LOG.info(
         "request",
         extra={
             "request_id": request_id,
             "method": request.method,
             "route": route,
+            "path": request.url.path[:200] if route == "other" else None,
             "status": response.status_code,
             "duration_ms": round(duration * 1000.0, 1),
         },
