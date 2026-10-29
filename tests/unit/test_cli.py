@@ -59,3 +59,16 @@ def test_init_creates_workspace(tmp_path, monkeypatch) -> None:
     assert result.exit_code == 0, result.output
     assert (tmp_path / "data").is_dir()
     assert (tmp_path / "mlruns").is_dir()
+
+
+def test_serve_disables_uvicorn_access_log_and_binds_loopback(monkeypatch) -> None:
+    # uvicorn's access log would print client addresses; the JSON request log omits them on purpose.
+    import uvicorn
+
+    calls: dict[str, object] = {}
+    monkeypatch.setattr(uvicorn, "run", lambda app, **kwargs: calls.update(kwargs))
+    monkeypatch.delenv("DEFECTLENS_HOST", raising=False)
+    result = CliRunner().invoke(cli.app, ["serve"])
+    assert result.exit_code == 0, result.output
+    assert calls["access_log"] is False
+    assert calls["host"] == "127.0.0.1"
