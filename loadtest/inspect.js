@@ -13,23 +13,42 @@
 
 import http from 'k6/http';
 import { check } from 'k6';
-import { Rate } from 'k6/metrics';
+import { Rate, Trend } from 'k6/metrics';
 
-const image = open(__ENV.IMAGE || 'loadtest/sample.png', 'b');
+// k6 resolves open() relative to this script, so pass IMAGE as an absolute path. The image is never
+// committed: it is a local MVTec-derived sample.
+if (!__ENV.IMAGE) throw new Error('set IMAGE to the absolute path of a sample image');
+const image = open(__ENV.IMAGE, 'b');
 const refused = new Rate('inference_refused');
+const accepted = new Trend('accepted_ms', true);
 
-export const options = {
-  scenarios: {
-    steady: {
+// Without RATE: a closed loop of VUs that saturates the inference slots. That measures overload
+// behaviour. With RATE: a fixed arrival rate (images per second), which measures capacity: the
+// latency of accepted requests and the refusal rate at that offered load.
+const scenario = __ENV.RATE
+  ? {
+      executor: 'constant-arrival-rate',
+      rate: Number(__ENV.RATE),
+      timeUnit: '1s',
+      duration: __ENV.DURATION || '2m',
+      preAllocatedVUs: 20,
+      maxVUs: 200,
+    }
+  : {
       executor: 'constant-vus',
       vus: Number(__ENV.VUS || 4),
       duration: __ENV.DURATION || '2m',
-    },
-  },
-  thresholds: {
-    http_req_duration: ['p(95)<1500'],
-    inference_refused: ['rate<0.05'],
-  },
+    };
+
+export const options = {
+  scenarios: { load: scenario },
+  summaryTrendStats: ['avg', 'med', 'p(95)', 'p(99)'],
+  thresholds: __ENV.RATE
+    ? {}
+    : {
+        http_req_duration: ['p(95)<1500'],
+        inference_refused: ['rate<0.05'],
+      },
 };
 
 http.setResponseCallback(http.expectedStatuses(200, 429, 503));
@@ -41,6 +60,7 @@ export default function () {
     file: http.file(image, 'sample.png', 'image/png'),
   });
   refused.add(response.status === 429 || response.status === 503);
+  if (response.status === 200) accepted.add(response.timings.duration);
   check(response, {
     'status is 200, 429 or 503': (r) => [200, 429, 503].includes(r.status),
     'bounded decision or refusal': (r) =>
