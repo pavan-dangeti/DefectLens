@@ -27,6 +27,7 @@ dependencies = [
   "onnxruntime>=1.30.0",
   "onnxscript>=0.7.2",
   "python-multipart>=0.0.32",
+  "prometheus-client>=0.26.0",
 ]
 
 [dependency-groups]
