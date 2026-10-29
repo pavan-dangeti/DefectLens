@@ -1,0 +1,50 @@
+{
+  "dataset": "mvtec",
+  "category": "toothbrush",
+  "calibration_images": 32,
+  "engine": "qnnpack",
+  "fp32_committed": {
+    "category": "toothbrush",
+    "method": "patchcore",
+    "n_fit": 48,
+    "n_cal": 6,
+    "n_holdout": 6,
+    "n_test_good": 12,
+    "n_test_bad": 30,
+    "threshold": 43.474365043640134,
+    "image_auroc": 0.9472222222222222,
+    "pixel_auroc": 0.9762819643538267,
+    "aupro": 0.7736026154514883,
+    "escape_rate_at_target_frr": 0.2,
+    "frr_at_calibration_target": 0.0,
+    "few_shot_image_auroc": {
+      "1": 0.7666666666666667,
+      "5": 0.8472222222222223,
+      "10": 0.8611111111111112
+    },
+    "seed": 0
+  },
+  "int8": {
+    "category": "toothbrush",
+    "method": "patchcore",
+    "n_fit": 48,
+    "n_cal": 6,
+    "n_holdout": 6,
+    "n_test_good": 12,
+    "n_test_bad": 30,
+    "threshold": 43.927748107910155,
+    "image_auroc": 0.9111111111111111,
+    "pixel_auroc": 0.974324126170042,
+    "aupro": 0.7458522219765013,
+    "escape_rate_at_target_frr": 0.23333333333333334,
+    "frr_at_calibration_target": 0.0,
+    "few_shot_image_auroc": {
+      "1": 0.8444444444444444,
+      "5": 0.9027777777777778,
+      "10": 0.8555555555555555
+    },
+    "seed": 0
+  },
+  "wall_seconds_accuracy": 24.0,
+  "git_commit": "9992cc5aa7d5b94f2e35d28e4eabc4cc5674963c"
+}
