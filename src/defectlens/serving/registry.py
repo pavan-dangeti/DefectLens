@@ -12,14 +12,18 @@ from typing import Any
 
 from defectlens.models.patchcore import PatchCore
 from defectlens.serving.checksums import verify_sidecar
-from defectlens.serving.drift import DriftMonitor
+from defectlens.serving.drift import MIN_REFERENCE_SCORES, DriftMonitor
 
 ARTIFACT_GLOB = "*.pt"
 
 
 def _drift_monitor(model: PatchCore) -> DriftMonitor | None:
-    """Drift monitoring needs the calibration scores; artefacts without them run unmonitored."""
-    if model.reference_scores is None:
+    """Drift monitoring needs enough calibration scores; otherwise the category runs unmonitored.
+
+    A category onboarded from a handful of images must still load and serve, so too few scores
+    disables monitoring rather than refusing the artefact.
+    """
+    if model.reference_scores is None or model.reference_scores.numel() < MIN_REFERENCE_SCORES:
         return None
     return DriftMonitor(model.reference_scores.numpy(), threshold=model.threshold)
 

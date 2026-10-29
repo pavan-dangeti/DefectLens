@@ -233,8 +233,9 @@ over the most recent 200 scored images of each category. Two alerts are exported
 
 The decision-rate alert assumes the mix of good and defective parts in production is stable. A
 sustained change in the flag rate is a reason to investigate, not proof that the model has failed.
-Artefacts written before this change carry no calibration scores, so they run without drift
-monitoring. The monitor is unit-tested on synthetic streams: it stays quiet on the reference
+Artefacts written before this change carry no calibration scores, and categories with fewer than 20
+calibration scores (few-shot onboarding) are too small for a meaningful KS test. Both load and serve
+without drift monitoring. The monitor is unit-tested on synthetic streams: it stays quiet on the reference
 distribution, raises a score alert on a shifted one, and raises a decision alert when the flag rate
 moves. It has not been measured on real production traffic.
 
