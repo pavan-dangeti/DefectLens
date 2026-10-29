@@ -778,8 +778,10 @@ explicit low-confidence / out-of-distribution result — **never a silent wrong 
 | Missing model artefact | `/ready` 503; `/inspect` refuses with a clear error |
 | Corrupted model artefact (checksum mismatch) | `/ready` 503; load fails loudly |
 | Concurrent load | Bounded latency; no errors beyond the configured limit; no OOM |
-| Unknown category | 422 from the enum |
-| Empty body / wrong content type | 400 |
+| Unknown category (no model loaded for it) | 404 with "category … not loaded" |
+| Missing `file` field in the multipart request | 422 from request validation |
+| Empty body | 400, as a corrupt image |
+| Wrong content type | Not rejected on its header: the bytes are decoded, so a non-image is a 400 |
 
 The low-confidence flag is the interesting one: an image can be perfectly *valid* and still be
 unlike anything in the training set. Silently returning a confident `pass` there is the worst

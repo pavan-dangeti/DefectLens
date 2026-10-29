@@ -10,7 +10,7 @@
 | Typecheck | `uv run mypy src/defectlens` |
 | Tests + coverage gate (85%) | `uv run pytest --cov --cov-report=term-missing` |
 | Build image | `docker build -t defectlens .` |
-| Compose up | `docker compose up` |
+| Run image | `docker run --rm -p 8000:8000 -v "$PWD/artifacts/registry:/app/artifacts/registry" defectlens serve --host 0.0.0.0 --registry /app/artifacts/registry` (no compose file yet) |
 
 ## Conventions
 
