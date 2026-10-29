@@ -5,8 +5,11 @@
 //   k6 run -e BASE_URL=http://localhost:8000 -e CATEGORY=bottle \
 //          -e IMAGE=loadtest/sample.png -e VUS=4 -e DURATION=2m loadtest/inspect.js
 //
-// A 503 is the designed response to overload, not a failure: it is counted separately so the
-// report shows how often the service refused work, and whether latency stayed bounded while it did.
+// A 503 (inference slots full) and a 429 (client over its rate limit) are the designed responses
+// to overload, not failures: both are counted as refusals so the report shows how often the service
+// refused work, and whether latency stayed bounded while it did. A single client IP hits the default
+// limit of 60 images a minute almost at once, so a latency measurement needs the limit lifted on the
+// server; the run then exercises inference, not the limiter.
 
 import http from 'k6/http';
 import { check } from 'k6';
@@ -29,7 +32,7 @@ export const options = {
   },
 };
 
-http.setResponseCallback(http.expectedStatuses(200, 503));
+http.setResponseCallback(http.expectedStatuses(200, 429, 503));
 
 export default function () {
   const base = __ENV.BASE_URL || 'http://localhost:8000';
@@ -37,10 +40,13 @@ export default function () {
   const response = http.post(`${base}/inspect?category=${category}`, {
     file: http.file(image, 'sample.png', 'image/png'),
   });
-  refused.add(response.status === 503);
+  refused.add(response.status === 429 || response.status === 503);
   check(response, {
-    'status is 200 or 503': (r) => r.status === 200 || r.status === 503,
+    'status is 200, 429 or 503': (r) => [200, 429, 503].includes(r.status),
     'bounded decision or refusal': (r) =>
-      r.status === 503 || r.json('decision') === 'good' || r.json('decision') === 'anomaly',
+      r.status === 429 ||
+      r.status === 503 ||
+      r.json('decision') === 'good' ||
+      r.json('decision') === 'anomaly',
   });
 }
