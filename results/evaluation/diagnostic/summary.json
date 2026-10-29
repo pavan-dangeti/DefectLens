@@ -1,0 +1,88 @@
+{
+  "baseline_seed0": {
+    "leather": {
+      "image_auroc": 1.0,
+      "aupro": 0.9557021324061079
+    },
+    "screw": {
+      "image_auroc": 0.7868415658946505,
+      "aupro": 0.872560348197
+    },
+    "toothbrush": {
+      "image_auroc": 0.9472222222222222,
+      "aupro": 0.7736026154514883
+    }
+  },
+  "baseline_seed_range": {
+    "leather": {
+      "image_auroc_min": 1.0,
+      "image_auroc_max": 1.0
+    },
+    "screw": {
+      "image_auroc_min": 0.7868415658946505,
+      "image_auroc_max": 0.8550932568149211
+    },
+    "toothbrush": {
+      "image_auroc_min": 0.8666666666666668,
+      "image_auroc_max": 0.986111111111111
+    }
+  },
+  "variants": {
+    "coreset_0.1": {
+      "leather": {
+        "image_auroc": 1.0,
+        "aupro": 0.9518685617197803
+      },
+      "screw": {
+        "image_auroc": 0.972535355605657,
+        "aupro": 0.912789637377911
+      },
+      "toothbrush": {
+        "image_auroc": 1.0,
+        "aupro": 0.8015429266818419
+      }
+    },
+    "fit_all": {
+      "leather": {
+        "image_auroc": 1.0,
+        "aupro": 0.9513641581689714
+      },
+      "screw": {
+        "image_auroc": 0.7257634761221562,
+        "aupro": 0.8871771440866713
+      },
+      "toothbrush": {
+        "image_auroc": 0.9833333333333334,
+        "aupro": 0.7726602965605969
+      }
+    },
+    "no_crop": {
+      "leather": {
+        "image_auroc": 1.0,
+        "aupro": 0.9619906420900045
+      },
+      "screw": {
+        "image_auroc": 0.7692150030744005,
+        "aupro": 0.8838765980255114
+      },
+      "toothbrush": {
+        "image_auroc": 0.8805555555555555,
+        "aupro": 0.8222190392802219
+      }
+    },
+    "anomalib": {
+      "leather": {
+        "image_auroc": 1.0,
+        "aupro": 0.9621481832689227
+      },
+      "screw": {
+        "image_auroc": 0.9684361549497849,
+        "aupro": 0.917080432420273
+      },
+      "toothbrush": {
+        "image_auroc": 0.9222222222222223,
+        "aupro": 0.8404385319515677
+      }
+    }
+  }
+}

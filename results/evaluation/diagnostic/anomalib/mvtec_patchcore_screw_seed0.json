@@ -1,0 +1,26 @@
+{
+  "category": "screw",
+  "variant": "anomalib",
+  "config": {
+    "coreset_ratio": 0.1,
+    "fit_all": true,
+    "resize": 256,
+    "crop": null,
+    "seed": 0,
+    "backbone": "wide_resnet50_2",
+    "layers": [
+      "layer2",
+      "layer3"
+    ]
+  },
+  "n_fit": 320,
+  "n_test_good": 41,
+  "n_test_bad": 119,
+  "metrics": {
+    "image_auroc": 0.9684361549497849,
+    "pixel_auroc": 0.985702283771635,
+    "aupro": 0.917080432420273
+  },
+  "wall_seconds": 1041.0,
+  "git_commit": "c62fbe0f186a982f7ee9bcd6ce95ceaa42ec6e85"
+}

@@ -1,0 +1,26 @@
+{
+  "category": "leather",
+  "variant": "no_crop",
+  "config": {
+    "coreset_ratio": 0.01,
+    "fit_all": false,
+    "resize": 256,
+    "crop": null,
+    "seed": 0,
+    "backbone": "wide_resnet50_2",
+    "layers": [
+      "layer2",
+      "layer3"
+    ]
+  },
+  "n_fit": 196,
+  "n_test_good": 32,
+  "n_test_bad": 92,
+  "metrics": {
+    "image_auroc": 1.0,
+    "pixel_auroc": 0.9895236818449913,
+    "aupro": 0.9619906420900045
+  },
+  "wall_seconds": 131.5,
+  "git_commit": "c62fbe0f186a982f7ee9bcd6ce95ceaa42ec6e85"
+}
