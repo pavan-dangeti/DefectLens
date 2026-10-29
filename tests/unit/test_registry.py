@@ -97,3 +97,23 @@ def test_load_registry_refuses_tampered_artifact(tmp_path: Path) -> None:
     path.write_bytes(bytes(data))
     with pytest.raises(ValueError, match="checksum mismatch"):
         load_registry(tmp_path)
+
+
+def test_reference_scores_survive_the_roundtrip_and_enable_drift(tmp_path: Path) -> None:
+    reference = torch.linspace(0.0, 1.0, 50)
+    _fitted().save(
+        tmp_path / "bottle.pt", category="bottle", threshold=0.4, reference_scores=reference
+    )
+    registry = load_registry(tmp_path)
+    loaded = registry["bottle"]["model"]
+    assert torch.equal(loaded.reference_scores, reference)
+    assert registry["bottle"]["drift"] is not None
+
+
+def test_artefact_without_reference_scores_runs_unmonitored(tmp_path: Path) -> None:
+    path = tmp_path / "bottle.pt"
+    _fitted().save(path, category="bottle", threshold=0.4)
+    write_sidecar(path)
+    registry = load_registry(tmp_path)
+    assert registry["bottle"]["model"].reference_scores is None
+    assert registry["bottle"]["drift"] is None
