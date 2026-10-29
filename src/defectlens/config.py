@@ -29,7 +29,9 @@ class Settings(BaseSettings):
     data_dir: Path = Path("data")
     artifacts_dir: Path = Path("artifacts")
     mlruns_dir: Path = Path("mlruns")
-    host: str = "0.0.0.0"
+    # Loopback by default: a bare `defectlens serve` must not expose the service on the network.
+    # The container binds 0.0.0.0 explicitly, in the Dockerfile CMD.
+    host: str = "127.0.0.1"
     port: int = 8000
     max_upload_mb: int = 20
     default_target_frr: float = 0.01
