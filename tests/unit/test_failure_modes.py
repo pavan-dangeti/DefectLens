@@ -229,6 +229,18 @@ def test_busy_inference_is_503_immediately() -> None:
     assert results == [200]
 
 
+def test_batch_is_charged_per_image_not_per_request() -> None:
+    client = _client(rate_limit_per_minute=3)
+    files = [
+        ("files", (f"{i}.png", _encode(Image.new("RGB", (224, 224))), "image/png"))
+        for i in range(2)
+    ]
+    first = client.post("/inspect/batch", params={"category": "bottle"}, files=files)
+    second = client.post("/inspect/batch", params={"category": "bottle"}, files=files)
+    assert first.status_code == 200
+    assert second.status_code == 429
+
+
 def test_rate_limit_is_429_with_retry_after() -> None:
     client = _client(rate_limit_per_minute=2)
     raw = _encode(Image.new("RGB", (224, 224)))
