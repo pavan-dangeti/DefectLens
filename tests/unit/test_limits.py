@@ -39,6 +39,16 @@ def test_new_keys_are_refused_past_the_cap() -> None:
     assert not limiter.allow("a", now=1)
 
 
+def test_a_full_map_recovers_once_clients_go_idle() -> None:
+    # Regression: the doubling threshold used to sit above the cap, so a full map of idle clients
+    # was never swept and new clients stayed refused until the process restarted.
+    limiter = SlidingWindowLimiter(max_units=1, window_seconds=10, max_keys=2)
+    assert limiter.allow("a", now=0)
+    assert limiter.allow("b", now=0)
+    assert not limiter.allow("c", now=1)
+    assert limiter.allow("c", now=11)
+
+
 def test_exhausted_reports_without_spending_budget() -> None:
     limiter = SlidingWindowLimiter(max_units=1, window_seconds=10)
     assert not limiter.exhausted("a", now=0)

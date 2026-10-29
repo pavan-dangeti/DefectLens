@@ -7,6 +7,7 @@ so that overload is answered with an explicit status code rather than slow silen
 from __future__ import annotations
 
 import ipaddress
+import math
 import threading
 import time
 from collections import deque
@@ -49,7 +50,8 @@ class SlidingWindowLimiter:
         self._hits: dict[str, deque[float]] = {}
         # Sweeping on every call would make each request O(map size) once the map is large.
         # Sweeping when the map has doubled since the last sweep keeps the cost amortised O(1).
-        self._next_sweep = self._MIN_SWEEP_AT
+        self._next_sweep: float = self._MIN_SWEEP_AT
+        self._last_sweep: float = -math.inf
         self._lock = threading.Lock()
 
     def allow(self, key: str, cost: int = 1, now: float | None = None) -> bool:
@@ -58,8 +60,13 @@ class SlidingWindowLimiter:
             if len(self._hits) >= self._next_sweep:
                 self._sweep(current)
             if key not in self._hits and len(self._hits) >= self._max_keys:
-                # Fail closed: a flood of new keys must not grow memory without limit.
-                return False
+                # At the cap, idle keys are reclaimed before a new client is refused. Sweeping is
+                # limited to once per window: a full map of active clients must not cost O(n) on
+                # every request. Refusing is fail-closed, and it clears once clients go idle.
+                if current - self._last_sweep >= self._window:
+                    self._sweep(current)
+                if len(self._hits) >= self._max_keys:
+                    return False
             hits = self._hits.setdefault(key, deque())
             self._expire(hits, current)
             if len(hits) + cost > self._max:
@@ -92,4 +99,12 @@ class SlidingWindowLimiter:
             self._expire(hits, current)
             if not hits:
                 del self._hits[key]
-        self._next_sweep = max(self._MIN_SWEEP_AT, 2 * len(self._hits))
+        self._last_sweep = current
+        live = len(self._hits)
+        # Below the cap the next doubling point is always reachable. At the cap there is none: the
+        # cap path above sweeps on its own schedule, so the doubling trigger must not fire on every
+        # call while the map is full.
+        if live < self._max_keys:
+            self._next_sweep = min(max(self._MIN_SWEEP_AT, 2 * live), self._max_keys)
+        else:
+            self._next_sweep = math.inf
