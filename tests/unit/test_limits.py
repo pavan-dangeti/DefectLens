@@ -49,6 +49,25 @@ def test_a_full_map_recovers_once_clients_go_idle() -> None:
     assert limiter.allow("c", now=11)
 
 
+def test_a_full_map_of_active_clients_sweeps_at_most_once_per_window() -> None:
+    limiter = SlidingWindowLimiter(max_units=1, window_seconds=60, max_keys=5)
+    for i in range(5):
+        assert limiter.allow(f"active-{i}", now=0)
+    sweeps = 0
+    original = limiter._sweep
+
+    def counting(current: float) -> None:
+        nonlocal sweeps
+        sweeps += 1
+        original(current)
+
+    limiter._sweep = counting  # type: ignore[method-assign]
+    # Every client is still active, so each attempt is refused, and the window has not passed.
+    for i in range(50):
+        assert not limiter.allow(f"new-{i}", now=1 + i * 0.5)
+    assert sweeps == 1
+
+
 def test_exhausted_reports_without_spending_budget() -> None:
     limiter = SlidingWindowLimiter(max_units=1, window_seconds=10)
     assert not limiter.exhausted("a", now=0)
