@@ -11,6 +11,7 @@ from pathlib import Path
 from typing import Any
 
 from defectlens.models.patchcore import PatchCore
+from defectlens.serving.checksums import verify_sidecar
 
 ARTIFACT_GLOB = "*.pt"
 
@@ -27,6 +28,7 @@ def load_registry(root: Path) -> dict[str, dict[str, Any]]:
 
     registry: dict[str, dict[str, Any]] = {}
     for path in sorted(root.glob(ARTIFACT_GLOB)):
+        verify_sidecar(path)
         try:
             model = PatchCore.load(path)
         except Exception as exc:  # any load failure must name the file, not leak a pickle error

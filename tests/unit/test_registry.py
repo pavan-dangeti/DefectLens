@@ -8,6 +8,7 @@ import pytest
 import torch
 
 from defectlens.models.patchcore import PatchCore
+from defectlens.serving.checksums import write_sidecar
 from defectlens.serving.registry import load_registry
 
 
@@ -47,6 +48,8 @@ def test_save_before_fit_is_rejected(tmp_path: Path) -> None:
 def test_load_registry_indexes_by_category(tmp_path: Path) -> None:
     _fitted().save(tmp_path / "bottle.pt", category="bottle", threshold=0.4)
     _fitted().save(tmp_path / "cable.pt", category="cable", threshold=0.6)
+    write_sidecar(tmp_path / "bottle.pt")
+    write_sidecar(tmp_path / "cable.pt")
 
     registry = load_registry(tmp_path)
     assert sorted(registry) == ["bottle", "cable"]
@@ -65,11 +68,32 @@ def test_load_registry_empty_directory_is_unready(tmp_path: Path) -> None:
 
 def test_load_registry_rejects_non_artifact(tmp_path: Path) -> None:
     (tmp_path / "bottle.pt").write_bytes(b"definitely not a torch archive")
+    write_sidecar(tmp_path / "bottle.pt")
     with pytest.raises(ValueError, match=r"bottle\.pt is not a loadable"):
         load_registry(tmp_path)
 
 
 def test_load_registry_rejects_artifact_without_category(tmp_path: Path) -> None:
     torch.save({"coreset_ratio": 0.1}, tmp_path / "bottle.pt")
+    write_sidecar(tmp_path / "bottle.pt")
     with pytest.raises(ValueError, match="not a loadable"):
+        load_registry(tmp_path)
+
+
+def test_load_registry_refuses_artifact_without_sidecar(tmp_path: Path) -> None:
+    _fitted().save(tmp_path / "bottle.pt", category="bottle", threshold=0.4)
+    with pytest.raises(ValueError, match="no checksum sidecar"):
+        load_registry(tmp_path)
+
+
+def test_load_registry_refuses_tampered_artifact(tmp_path: Path) -> None:
+    path = tmp_path / "bottle.pt"
+    _fitted().save(path, category="bottle", threshold=0.4)
+    write_sidecar(path)
+    # Flip one byte in place: the file still parses as a torch archive, so only the checksum
+    # stands between a swapped bank and a silently wrong score.
+    data = bytearray(path.read_bytes())
+    data[len(data) // 2] ^= 0xFF
+    path.write_bytes(bytes(data))
+    with pytest.raises(ValueError, match="checksum mismatch"):
         load_registry(tmp_path)
