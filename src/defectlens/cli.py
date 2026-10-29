@@ -177,7 +177,8 @@ def serve(
         max_upload_mb=settings.max_upload_mb,
     )
     console.print(f"  registry:  {registry or '(none — /ready will report 503)'}")
-    uvicorn.run(app, host=host or settings.host, port=port or settings.port)
+    # uvicorn's own access log prints client addresses, which the JSON request log deliberately omits.
+    uvicorn.run(app, host=host or settings.host, port=port or settings.port, access_log=False)
 
 
 @app.command()
