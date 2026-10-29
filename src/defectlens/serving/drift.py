@@ -22,6 +22,9 @@ import numpy as np
 
 KS_CRITICAL = 1.95  # c(alpha) at alpha = 0.001 for the large-sample two-sample KS test
 DECISION_Z = 4.0
+# Below this many calibration scores the KS test is not meaningful; the registry then leaves the
+# category unmonitored instead of refusing to load it. Few-shot categories have this few.
+MIN_REFERENCE_SCORES = 20
 
 
 @dataclass(frozen=True)
@@ -49,8 +52,10 @@ class DriftMonitor:
         target_frr: float = 0.01,
         window: int = 200,
     ) -> None:
-        if reference.size < 2:
-            raise ValueError("drift monitoring needs at least two reference scores")
+        if reference.size < MIN_REFERENCE_SCORES:
+            raise ValueError(
+                f"drift monitoring needs at least {MIN_REFERENCE_SCORES} reference scores"
+            )
         if window < 2:
             raise ValueError("the drift window must hold at least two scores")
         self._reference = np.sort(reference.astype(np.float64).ravel())

@@ -117,3 +117,13 @@ def test_artefact_without_reference_scores_runs_unmonitored(tmp_path: Path) -> N
     registry = load_registry(tmp_path)
     assert registry["bottle"]["model"].reference_scores is None
     assert registry["bottle"]["drift"] is None
+
+
+def test_few_reference_scores_load_but_run_unmonitored(tmp_path: Path) -> None:
+    # A category onboarded from a handful of images must still serve; only monitoring is skipped.
+    path = tmp_path / "bottle.pt"
+    _fitted().save(path, category="bottle", threshold=0.4, reference_scores=torch.linspace(0, 1, 5))
+    write_sidecar(path)
+    entry = load_registry(tmp_path)["bottle"]
+    assert entry["drift"] is None
+    assert entry["model"].reference_scores is not None
