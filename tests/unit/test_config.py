@@ -55,6 +55,12 @@ def test_settings_defaults() -> None:
     assert settings.default_target_frr == 0.01
 
 
+def test_default_host_binds_to_localhost_only(monkeypatch: pytest.MonkeyPatch) -> None:
+    # A bare `defectlens serve` must not listen on the network; the container opts in explicitly.
+    monkeypatch.delenv("DEFECTLENS_HOST", raising=False)
+    assert load_settings().host == "127.0.0.1"
+
+
 def test_load_dataset_config_rejects_non_mapping(tmp_path: Path) -> None:
     bad = tmp_path / "bad.yaml"
     bad.write_text("- just\n- a\n- list\n")

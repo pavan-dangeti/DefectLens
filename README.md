@@ -51,12 +51,24 @@ uv run mypy src/defectlens
 uv run pytest --cov --cov-report=term-missing
 ```
 
-Build and run the container:
+Serve the API:
+
+```bash
+uv run defectlens serve --registry <dir-of-artefacts>   # binds 127.0.0.1:8000
+```
+
+`defectlens serve` listens on loopback only unless you ask otherwise, with `--host` or
+`DEFECTLENS_HOST`. The container image binds `0.0.0.0` so the published port is reachable from the
+host:
 
 ```bash
 docker build -t defectlens .
-docker compose up
+docker run --rm -p 8000:8000 -v "$PWD/artifacts/registry:/app/artifacts/registry" \
+  defectlens serve --host 0.0.0.0 --registry /app/artifacts/registry
 ```
+
+The image's default command is `defectlens serve --host 0.0.0.0` with no model registry, so `/ready`
+returns 503 until you mount one and pass `--registry`, as above.
 
 ## Licences
 
