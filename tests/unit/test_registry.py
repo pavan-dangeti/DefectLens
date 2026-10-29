@@ -101,9 +101,9 @@ def test_load_registry_refuses_tampered_artifact(tmp_path: Path) -> None:
 
 def test_reference_scores_survive_the_roundtrip_and_enable_drift(tmp_path: Path) -> None:
     reference = torch.linspace(0.0, 1.0, 50)
-    _fitted().save(
-        tmp_path / "bottle.pt", category="bottle", threshold=0.4, reference_scores=reference
-    )
+    path = tmp_path / "bottle.pt"
+    _fitted().save(path, category="bottle", threshold=0.4, reference_scores=reference)
+    write_sidecar(path)
     registry = load_registry(tmp_path)
     loaded = registry["bottle"]["model"]
     assert torch.equal(loaded.reference_scores, reference)
