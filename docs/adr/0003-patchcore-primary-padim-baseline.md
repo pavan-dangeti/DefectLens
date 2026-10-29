@@ -17,16 +17,17 @@ Two candidate families fit "no defective labels":
 - **PatchCore** (Roth et al., CVPR 2022) — a non-parametric memory bank of nominal patch
   features, greedy k-center coreset subsampled, scored by nearest-neighbour distance.
 
-Published evidence, single-class protocol, class-averaged:
+Evidence, as measured in this repository (Phase 5). An earlier draft of this record quoted published
+single-class figures for both methods. Those could not be traced to a source and have been withdrawn.
 
-| | MVTec AD image AUROC | VisA image AUROC |
+| | MVTec AD image AUROC (15-category mean) | VisA image AUROC (12-category mean) |
 |---|---|---|
-| PaDiM | 0.953 | 0.878 |
-| PatchCore | 0.991 | 0.924 |
+| PatchCore (ours, 3 seeds) | 0.967 ± 0.005 | 0.891 ± 0.017 |
+| PaDiM | not measured here | not measured here |
 
-Both are training-free. PaDiM is roughly an order of magnitude cheaper. PatchCore is
-consistently better, and the gap **widens on VisA** — the harder, more realistic benchmark with
-multiple instances per image and only 100 anomalies per category.
+Both are training-free. PaDiM is roughly an order of magnitude cheaper. The decision to make PatchCore
+primary rests on the measured PatchCore results and on the cost argument; a measured PaDiM comparison on
+the same protocol is still to be run before any claim about the size of the gap.
 
 ## Decision
 

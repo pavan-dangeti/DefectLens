@@ -280,19 +280,17 @@ recorded here so that nobody quotes it as if it were a like-for-like result.
 
 VisA, 1-class protocol (90% nominal train / 10% nominal + all anomalies test):
 
-| Method | Image AUROC | Pixel AUROC | AU-PRO |
+| Source | Image AUROC | Pixel AUROC | AU-PRO |
 |---|---|---|---|
-| PaDiM (R50) | 0.878 | 0.931 | not reported |
-| PatchCore (WRN50) | 0.924 | 0.984 | not reported |
-| PatchCore (anomalib reproduction, Real-IAD Table 2) | 0.951 | — | 0.912 |
-| PaDiM (anomalib reproduction, Real-IAD Table 2) | 0.851 | — | 0.797 |
+| PatchCore, anomalib reproduction (Real-IAD Table 2, §5.1; verified against the paper) | 0.951 | — | 0.912 |
+| DefectLens PatchCore, 12-category mean, 3 seeds, coreset 0.01 (`results/evaluation/summary.json`) | 0.891 | 0.954 | 0.736 |
 
-The VisA numbers come from a different source than the MVTec ones (the VisA paper reports only
-AU-ROC and AU-PR; the AU-PRO pair is from Real-IAD's anomalib reproduction) and are labelled as
-such rather than blended into one table.
+Earlier drafts of this table also quoted PaDiM and PatchCore VisA figures from other papers. Those
+could not be traced to a source, so they were removed. The README's reference comparison lists the
+protocol differences between the Real-IAD row and our measurements.
 
-**The most important number in this document:** PatchCore's image AUROC falls from 0.998 on
-MVTec AD to 0.924 on VisA, and PaDiM's from 0.945 to 0.878. VisA is a harder, more realistic
+**The most important number in this document:** on our own runs, PatchCore's mean image AUROC is
+0.967 on MVTec AD (15 categories) and 0.891 on VisA (12 categories). VisA is a harder, more realistic
 benchmark — multiple instances per image, cluttered structure, and only 100 anomalies per
 category. **A MVTec-only evaluation materially overstates what this method does on a real
 line.** VisA is therefore the primary generalisation evidence and the licence-clean serving
@@ -568,7 +566,7 @@ Exported as Prometheus metrics; dashboard definitions are committed (§12).
 
 | Alternative | Why not |
 |---|---|
-| **PaDiM as the primary method** | Cheaper and simpler, but ~4–5 pp image AUROC behind PatchCore on VisA (0.878 vs 0.924). Demoted to baseline, where it is genuinely useful — it bounds the value of the memory bank. |
+| **PaDiM as the primary method** | Cheaper and simpler, but its VisA gap to PatchCore has not been measured in this repository, and the published figures we quoted earlier could not be verified. Demoted to baseline, where it is genuinely useful — it bounds the value of the memory bank. |
 | **Student–teacher (Uninformed Students)** | Requires training a student per category, which contradicts the few-shot cold-start premise and multiplies CI and serving cost. |
 | **Reconstruction / inpainting (DRAEM, RIAD)** | Superficial-anomaly bias: they can reconstruct a defect from context. Strong on textures, weak on the structural subtleties that matter for objects. |
 | **Normalising flows (FastFlow, CFLOW)** | Better published MVTec numbers than PatchCore, but requires per-category training, which is exactly what the deployment scenario cannot afford. |

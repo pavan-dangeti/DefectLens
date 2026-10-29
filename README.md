@@ -296,6 +296,10 @@ returns 503 until you mount one and pass `--registry`, as above.
 - Rotation out of distribution is not detected (strict xfail in `tests/unit/test_failure_modes.py`).
 - The rate limiter and the drift windows are in-process. Several workers would need shared state.
 - The diagnostic uses one seed per variant. The INT8 comparison is also single-seed.
+- PaDiM is implemented as the baseline, but no PaDiM result has been measured in this repository.
+- The published VisA figures quoted in earlier drafts of the design doc and ADR-0003 could not be
+  traced to a source and have been withdrawn. The one published VisA figure used here is the Real-IAD
+  PatchCore row above.
 - Trivy runs in CI only; it has not been run locally.
 - The `docker compose` workflow listed in `AGENTS.md` has no compose file yet.
 - Phase 6 (hosted demo, model cards, runbook, release) has not started.
