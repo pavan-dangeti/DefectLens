@@ -40,19 +40,26 @@ class SlidingWindowLimiter:
     across them. The single-process uvicorn deployment in the Dockerfile is what this is sized for.
     """
 
-    _SWEEP_AT = 4096
+    _MIN_SWEEP_AT = 4096
 
-    def __init__(self, max_units: int, window_seconds: float) -> None:
+    def __init__(self, max_units: int, window_seconds: float, max_keys: int = 100_000) -> None:
         self._max = max_units
         self._window = window_seconds
+        self._max_keys = max_keys
         self._hits: dict[str, deque[float]] = {}
+        # Sweeping on every call would make each request O(map size) once the map is large.
+        # Sweeping when the map has doubled since the last sweep keeps the cost amortised O(1).
+        self._next_sweep = self._MIN_SWEEP_AT
         self._lock = threading.Lock()
 
     def allow(self, key: str, cost: int = 1, now: float | None = None) -> bool:
         current = time.monotonic() if now is None else now
         with self._lock:
-            if len(self._hits) >= self._SWEEP_AT:
+            if len(self._hits) >= self._next_sweep:
                 self._sweep(current)
+            if key not in self._hits and len(self._hits) >= self._max_keys:
+                # Fail closed: a flood of new keys must not grow memory without limit.
+                return False
             hits = self._hits.setdefault(key, deque())
             self._expire(hits, current)
             if len(hits) + cost > self._max:
@@ -61,6 +68,19 @@ class SlidingWindowLimiter:
                 return False
             hits.extend([current] * cost)
             return True
+
+    def exhausted(self, key: str, now: float | None = None) -> bool:
+        """True when the key has no budget left, without spending any."""
+        current = time.monotonic() if now is None else now
+        with self._lock:
+            hits = self._hits.get(key)
+            if hits is None:
+                return False
+            self._expire(hits, current)
+            if not hits:
+                del self._hits[key]
+                return False
+            return len(hits) >= self._max
 
     def _expire(self, hits: deque[float], current: float) -> None:
         while hits and current - hits[0] >= self._window:
@@ -72,3 +92,4 @@ class SlidingWindowLimiter:
             self._expire(hits, current)
             if not hits:
                 del self._hits[key]
+        self._next_sweep = max(self._MIN_SWEEP_AT, 2 * len(self._hits))

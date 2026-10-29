@@ -241,6 +241,16 @@ def test_batch_is_charged_per_image_not_per_request() -> None:
     assert second.status_code == 429
 
 
+def test_exhausted_client_is_refused_before_the_batch_is_read() -> None:
+    client = _client(rate_limit_per_minute=1)
+    raw = _encode(Image.new("RGB", (224, 224)))
+    assert _upload(client, raw).status_code == 200
+    files = [("files", ("a.png", raw, "image/png"))]
+    refused = client.post("/inspect/batch", params={"category": "bottle"}, files=files)
+    assert refused.status_code == 429
+    assert refused.headers["Retry-After"] == "60"
+
+
 def test_rate_limit_is_429_with_retry_after() -> None:
     client = _client(rate_limit_per_minute=2)
     raw = _encode(Image.new("RGB", (224, 224)))
