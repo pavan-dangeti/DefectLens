@@ -60,6 +60,9 @@ jobs:
       - run: docker build -t defectlens:ci .
       - name: Scan the image for fixable HIGH and CRITICAL vulnerabilities
         uses: aquasecurity/trivy-action@v0.36.0
+        env:
+          # The image carries torch's CUDA libraries, so analysis takes longer than Trivy's 5-minute default.
+          TRIVY_TIMEOUT: 30m
         with:
           image-ref: defectlens:ci
           severity: HIGH,CRITICAL
