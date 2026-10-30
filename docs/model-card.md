@@ -6,10 +6,15 @@ tags:
   - industrial-inspection
   - patchcore
   - visa
-pipeline_tag: image-classification
 ---
 
 # DefectLens: PatchCore models for VisA product categories
+
+## Links
+
+- Source code: <https://github.com/pavan-dangeti/DefectLens>
+- Release v1.0.0: <https://github.com/pavan-dangeti/DefectLens/releases/tag/v1.0.0>
+- Demo recording: <https://raw.githubusercontent.com/pavan-dangeti/DefectLens/main/docs/media/demo.gif>
 
 ![Demo: a normal part, two defects caught and two missed, with scores and heatmaps](https://raw.githubusercontent.com/pavan-dangeti/DefectLens/main/docs/media/demo.gif)
 
