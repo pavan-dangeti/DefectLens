@@ -1,7 +1,9 @@
+# CPU-only torch: the CUDA wheels from PyPI are several GB and unused on the Space's CPU hardware.
+--extra-index-url https://download.pytorch.org/whl/cpu
+torch==2.14.1+cpu
+torchvision==0.29.1+cpu
 gradio==6.30.0
-huggingface_hub
-timm
-torch
-# defectlens itself: installed from the GitHub repository at the v1.0.0 tag. The repository is private
-# today, so this line needs either the repository to be public or a token. See the release checklist.
+huggingface_hub==2.1.1
+timm==1.0.30
+# defectlens itself, from the public repository at the v1.0.0 tag.
 defectlens @ git+https://github.com/pavan-dangeti/DefectLens@v1.0.0
