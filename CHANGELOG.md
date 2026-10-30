@@ -3,7 +3,7 @@
 All notable changes to DefectLens. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and the project uses [Semantic Versioning](https://semver.org/).
 
-## [1.0.0] - 2026-10-29
+## [1.0.0] - 2026-10-30
 
 First release: PatchCore anomaly detection on good-only images, with a serving API, a reproducible
 three-seed evaluation on MVTec AD and VisA, drift monitoring, and an operations runbook.
