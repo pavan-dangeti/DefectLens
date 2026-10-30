@@ -65,7 +65,9 @@ def _inspect(client: httpx.Client, path: Path, category: str) -> dict[str, objec
 
 
 def _colour_heatmap(png_b64: str, size: int) -> Image.Image:
-    grey = np.asarray(Image.open(io.BytesIO(base64.b64decode(png_b64))).convert("L"), dtype=np.float32)
+    grey = np.asarray(
+        Image.open(io.BytesIO(base64.b64decode(png_b64))).convert("L"), dtype=np.float32
+    )
     level = grey / 255.0
     # A heat scale from dark through red and yellow to white, so low scores stay dark.
     red = np.clip(level * 2.2, 0, 1)
@@ -87,18 +89,28 @@ def _frame(source: Path, result: dict[str, object], category: str, description: 
     frame.paste(original, (30, 90))
     frame.paste(heat, (30 + panel + 30, 90))
     draw.text((30, 90 + panel + 8), "Photo", font=small, fill=(170, 170, 170))
-    draw.text((30 + panel + 30, 90 + panel + 8), "Where it differs (red = more)", font=small,
-              fill=(170, 170, 170))
+    draw.text(
+        (30 + panel + 30, 90 + panel + 8),
+        "Where it differs (red = more)",
+        font=small,
+        fill=(170, 170, 170),
+    )
 
     decision = str(result["decision"])
     colour = (230, 90, 90) if decision == "anomaly" else (110, 200, 130)
     x = 30 + 2 * panel + 70
     draw.text((x, 100), f"Decision: {decision}", font=_font(22), fill=colour)
     draw.text((x, 150), f"Score: {float(result['score']):.2f}", font=body, fill=(235, 235, 235))
-    draw.text((x, 185), f"Threshold: {float(result['threshold']):.2f}", font=body, fill=(235, 235, 235))
+    draw.text(
+        (x, 185), f"Threshold: {float(result['threshold']):.2f}", font=body, fill=(235, 235, 235)
+    )
     draw.text((x, 220), "Threshold rejects 1% of good parts.", font=small, fill=(170, 170, 170))
-    draw.text((30, FRAME_H - 40), "Served locally by DefectLens v1.0.0. Images: VisA, CC BY 4.0.",
-              font=small, fill=(150, 150, 150))
+    draw.text(
+        (30, FRAME_H - 40),
+        "Served locally by DefectLens v1.0.0. Images: VisA, CC BY 4.0.",
+        font=small,
+        fill=(150, 150, 150),
+    )
     return frame
 
 
@@ -106,11 +118,21 @@ def _title() -> Image.Image:
     frame = Image.new("RGB", (FRAME_W, FRAME_H), (18, 18, 22))
     draw = ImageDraw.Draw(frame)
     draw.text((60, 180), "DefectLens", font=_font(64), fill=(235, 235, 235))
-    draw.text((60, 270), "Flags defects from a single photo, trained on good parts only.",
-              font=_font(26), fill=(200, 200, 200))
-    draw.text((60, 320), "Running locally on 127.0.0.1 with the v1.0.0 VisA models.",
-              font=_font(22), fill=(160, 160, 160))
-    draw.text((60, FRAME_H - 40), "Images: VisA dataset, CC BY 4.0.", font=_font(16), fill=(150, 150, 150))
+    draw.text(
+        (60, 270),
+        "Flags defects from a single photo, trained on good parts only.",
+        font=_font(26),
+        fill=(200, 200, 200),
+    )
+    draw.text(
+        (60, 320),
+        "Running locally on 127.0.0.1 with the v1.0.0 VisA models.",
+        font=_font(22),
+        fill=(160, 160, 160),
+    )
+    draw.text(
+        (60, FRAME_H - 40), "Images: VisA dataset, CC BY 4.0.", font=_font(16), fill=(150, 150, 150)
+    )
     return frame
 
 
@@ -121,13 +143,22 @@ def main() -> None:
         for category, folder, description in SAMPLES:
             source = _first_image(category, folder)
             result = _inspect(client, source, category)
-            print(f"{category}/{folder}: {result['decision']} score={float(result['score']):.2f} "
-                  f"threshold={float(result['threshold']):.2f}", flush=True)
+            print(
+                f"{category}/{folder}: {result['decision']} score={float(result['score']):.2f} "
+                f"threshold={float(result['threshold']):.2f}",
+                flush=True,
+            )
             frames.append(_frame(source, result, category, description))
 
     gif_path = OUT / "demo.gif"
-    frames[0].save(gif_path, save_all=True, append_images=frames[1:],
-                   duration=SECONDS_PER_FRAME * 1000, loop=0, optimize=True)
+    frames[0].save(
+        gif_path,
+        save_all=True,
+        append_images=frames[1:],
+        duration=SECONDS_PER_FRAME * 1000,
+        loop=0,
+        optimize=True,
+    )
 
     if shutil.which("ffmpeg") is None:
         raise SystemExit("ffmpeg is needed for the MP4")
@@ -136,10 +167,20 @@ def main() -> None:
             frame.save(Path(tmp) / f"frame_{index:02d}.png")
         subprocess.run(
             [
-                "ffmpeg", "-y", "-loglevel", "error",
-                "-framerate", f"1/{SECONDS_PER_FRAME}",
-                "-i", str(Path(tmp) / "frame_%02d.png"),
-                "-vf", "fps=25", "-c:v", "libx264", "-pix_fmt", "yuv420p",
+                "ffmpeg",
+                "-y",
+                "-loglevel",
+                "error",
+                "-framerate",
+                f"1/{SECONDS_PER_FRAME}",
+                "-i",
+                str(Path(tmp) / "frame_%02d.png"),
+                "-vf",
+                "fps=25",
+                "-c:v",
+                "libx264",
+                "-pix_fmt",
+                "yuv420p",
                 str(OUT / "demo.mp4"),
             ],
             check=True,
