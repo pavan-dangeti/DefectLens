@@ -4,9 +4,21 @@ Find defects on manufactured parts from a single photo. Trained only on images o
 parts, because that is how real production lines work — defects are rare, varied, and unknown
 in advance.
 
-> **Status: Phase 5 (serving and evaluation) complete, pending review.** The results below come from
-> committed scripts and committed result files. Phase 6 (demo, model cards, runbook, release) has not
-> started and waits for approval. The design is in [`docs/design.md`](docs/design.md).
+> **Status: v1.0.0.** Released 2026-10-30; see the [release notes](https://github.com/pavan-dangeti/DefectLens/releases/tag/v1.0.0).
+> The results below come from committed scripts and committed result files. The Hugging Face Space is not
+> published: it needs a paid tier (see [`hf/space`](hf/space/README.md)). The design is in
+> [`docs/design.md`](docs/design.md).
+
+## Demo
+
+![DefectLens demo: a normal part, two defects it catches and two it misses, with the score and heatmap](https://raw.githubusercontent.com/pavan-dangeti/DefectLens/main/docs/media/demo.gif)
+
+Served locally with the v1.0.0 VisA models. For each image the service returns a decision, an anomaly score
+against its threshold, and a heatmap of where the part differs from good parts. The set shows a normal part,
+two defects it catches and two it misses. At the 1% false-reject target, escape rates are high for some
+categories; see [Escape rate at a 1% false-reject target](#escape-rate-at-a-1-false-reject-target).
+The video is [`docs/media/demo.mp4`](docs/media/demo.mp4). The four VisA photos in it are credited on screen
+(CC BY 4.0). Regenerate it with `hf/demo/make_demo.py` against a running service.
 
 ## Read this first
 

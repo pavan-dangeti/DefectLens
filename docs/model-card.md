@@ -11,6 +11,10 @@ pipeline_tag: image-classification
 
 # DefectLens: PatchCore models for VisA product categories
 
+![Demo: a normal part, two defects caught and two missed, with scores and heatmaps](https://raw.githubusercontent.com/pavan-dangeti/DefectLens/main/docs/media/demo.gif)
+
+Demo recorded from the local service with these weights. Source and video: <https://github.com/pavan-dangeti/DefectLens>.
+
 Per-category PatchCore models that flag defects on manufactured parts. Each model is trained only on
 images of **good** parts; no defective examples are used, in fitting or in calibration.
 
